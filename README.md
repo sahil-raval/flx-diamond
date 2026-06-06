@@ -125,9 +125,6 @@ yarn build          # outputs to /dist
    - `http://localhost:3000`
 2. **Register Studio** — open `/studio` on your deployed site → click **"Add development host"** (Sanity v5 one-click).
 
----
-
-## What's managed from Sanity
 
 | Schema | What it controls |
 |---|---|
