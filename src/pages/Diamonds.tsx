@@ -925,7 +925,7 @@ import { useState, useMemo, useRef } from "react";
     const [caratMin,    setCaratMin]    = useState(0);
     const [caratMax,    setCaratMax]    = useState(999);
     const [sortKey,     setSortKey]     = useState<SortKey>("default");
-    const [gridCols, setGridCols] = useState<2 | 3>(3);
+    const [gridCols, setGridCols] = useState<3 | 4>(3);
     const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
     const [quickViewDiamond, setQuickViewDiamond] = useState<Diamond | null>(null);
     const { isInShortlist, addToShortlist, removeFromShortlist, count: shortlistCount } = useShortlist();
@@ -970,9 +970,9 @@ import { useState, useMemo, useRef } from "react";
       setFluorFilter("All"); setCertFilter("All");
     };
   
-    const gridClass = gridCols === 2
-      ? "grid-cols-1 sm:grid-cols-2"
-      : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
+    const gridClass = gridCols === 4
+      ? "grid-cols-2 sm:grid-cols-2 lg:grid-cols-4"
+      : "grid-cols-2 sm:grid-cols-2 lg:grid-cols-3";
   
     return (
       <div style={{ background: "#02274A", minHeight: "100vh" }}>
@@ -1358,12 +1358,16 @@ import { useState, useMemo, useRef } from "react";
                       </select>
                     </div>
                     <div className="flex gap-1">
-                      {([2,3] as const).map(n => (
+                      {([3,4] as const).map(n => (
                         <button key={n} onClick={() => { setGridCols(n); setViewMode("grid"); }}
-                          className="w-8 h-8 transition-all text-[9px] font-mono"
-                          style={{ border: `1px solid ${viewMode === "grid" && gridCols === n ? "#1CA9C9" : "rgba(255,255,255,0.12)"}`, color: viewMode === "grid" && gridCols === n ? "#1CA9C9" : "rgba(255,255,255,0.3)", background: viewMode === "grid" && gridCols === n ? "rgba(28,169,201,0.08)" : "transparent" }}
+                         className="w-8 h-8 transition-all text-[9px] font-mono"
+                         style={{
+                          border: `1px solid ${viewMode === "grid" && gridCols === n ? "#1CA9C9" : "rgba(255,255,255,0.12)"}`,
+                          color: viewMode === "grid" && gridCols === n ? "#1CA9C9" : "rgba(255,255,255,0.3)",
+                          background: viewMode === "grid" && gridCols === n ? "rgba(28,169,201,0.08)" : "transparent",
+                        }}
                         >{n}×</button>
-                      ))}
+                        ))}
                       <button
                         onClick={() => setViewMode("list")}
                         className="w-8 h-8 transition-all flex items-center justify-center"
@@ -1524,18 +1528,16 @@ import { useState, useMemo, useRef } from "react";
                     </div>
                     {/* Grid / List toggle */}
                     <div className="flex gap-1">
-                      {([2,3] as const).map(n => (
-                        <button
-                          key={n}
-                          onClick={() => { setGridCols(n); setViewMode("grid"); }}
+                        {([3,4] as const).map(n => (
+                          <button key={n} onClick={() => { setGridCols(n); setViewMode("grid"); }}
                           className="w-8 h-8 transition-all text-[9px] font-mono"
                           style={{
                             border: `1px solid ${viewMode === "grid" && gridCols === n ? "#1CA9C9" : "rgba(255,255,255,0.12)"}`,
                             color: viewMode === "grid" && gridCols === n ? "#1CA9C9" : "rgba(255,255,255,0.3)",
                             background: viewMode === "grid" && gridCols === n ? "rgba(28,169,201,0.08)" : "transparent",
                           }}
-                        >{n}×</button>
-                      ))}
+                          >{n}×</button>
+                          ))}
                       <button
                         onClick={() => setViewMode("list")}
                         className="w-8 h-8 transition-all flex items-center justify-center"
