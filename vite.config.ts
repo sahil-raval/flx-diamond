@@ -54,8 +54,6 @@ export default defineConfig({
       : undefined,
   },
   build: {
-    rollupOptions: {
-      external: (id) => id === "sanity.config.ts" || id.endsWith("sanity.config.ts"),
-    },
+    rollupOptions: {},
   },
 });
