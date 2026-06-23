@@ -32,12 +32,24 @@ export function urlFor(source: SanityImageSource) {
   return builder.image(source);
 }
 
+// Route all GROQ queries through the API server to avoid browser CORS restrictions.
+// The server calls Sanity server-to-server, so no CORS headers needed on the browser side.
+const API_BASE = "/api";
+
 export async function sanityFetch<T>(query: string, params?: Record<string, unknown>): Promise<T | null> {
-  if (!sanityClient) return null;
+  if (!isSanityConfigured) return null;
   try {
-    return await sanityClient.fetch<T>(query, params ?? {});
+    const res = await fetch(`${API_BASE}/sanity/query`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query, params: params ?? {} }),
+    });
+    if (!res.ok) return null;
+    const json = await res.json() as { result?: T };
+    return json.result ?? null;
   } catch (error) {
     console.error("Sanity fetch error:", error);
     return null;
   }
 }
+
