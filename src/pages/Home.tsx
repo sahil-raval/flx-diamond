@@ -376,250 +376,481 @@ function buildOceanSound(ctx: AudioContext): () => void {
 }
 
 /* ── Testimonials data ──────────────────────────────── */
-// const TESTIMONIALS = [
-//   {
-//     quote: "Unlocked significant value from a 2.4ct IF stone we'd held for two years. The GIA FL certificate came back within the same carat bracket. Remarkable.",
-//     role: "Senior Diamond Buyer",
-//     location: "Dubai",
-//   },
-//   {
-//     quote: "We've used FLXDIAMONDS for white-label sourcing across three collections. Their discretion is absolute. Our clients never know the source, and the quality speaks for itself.",
-//     role: "Head of Procurement",
-//     location: "Mumbai",
-//   },
-//   {
-//     quote: "The assessment was free, the process was explained clearly, and the result exceeded expectations. For anyone holding IF stones, the conversation costs nothing.",
-//     role: "Private Investor",
-//     location: "Singapore",
-//   },
-//   {
-//     quote: "What impressed us most was the transparency — a clear yes or no on viability, no sales pressure, and a result that genuinely moved the value of our inventory.",
-//     role: "Jewellery Retailer",
-//     location: "Melbourne",
-//   },
-// ];
-// function TestimonialSlider() {
-//   const [idx, setIdx]       = useState(0);
-//   const [dir, setDir]       = useState(1);
-//   const [paused, setPaused] = useState(false);
-//   const [progress, setProgress] = useState(0);
-//   const INTERVAL = 5000;
+const TESTIMONIALS = [
+  {
+    quote: "Unlocked significant value from a 2.4ct IF stone we'd held for two years. The GIA FL certificate came back within the same carat bracket. Remarkable.",
+    role: "Senior Diamond Buyer",
+    location: "Dubai",
+  },
+  {
+    quote: "We've used FLXDIAMONDS for white-label sourcing across three collections. Their discretion is absolute. Our clients never know the source, and the quality speaks for itself.",
+    role: "Head of Procurement",
+    location: "Mumbai",
+  },
+  {
+    quote: "The assessment was free, the process was explained clearly, and the result exceeded expectations. For anyone holding IF stones, the conversation costs nothing.",
+    role: "Private Investor",
+    location: "Singapore",
+  },
+  {
+    quote: "What impressed us most was the transparency — a clear yes or no on viability, no sales pressure, and a result that genuinely moved the value of our inventory.",
+    role: "Jewellery Retailer",
+    location: "Melbourne",
+  },
+];
+function TestimonialSlider() {
+  const [idx, setIdx]       = useState(0);
+  const [dir, setDir]       = useState(1);
+  const [paused, setPaused] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const INTERVAL = 5000;
 
-//   useEffect(() => {
-//     if (paused) return;
-//     setProgress(0);
-//     const step = 50;
-//     const inc  = (step / INTERVAL) * 100;
-//     const prog = setInterval(() => setProgress(p => Math.min(p + inc, 100)), step);
-//     const adv  = setTimeout(() => {
-//       setDir(1);
-//       setIdx(i => (i + 1) % TESTIMONIALS.length);
-//     }, INTERVAL);
-//     return () => { clearInterval(prog); clearTimeout(adv); };
-//   }, [idx, paused]);
+  useEffect(() => {
+    if (paused) return;
+    setProgress(0);
+    const step = 50;
+    const inc  = (step / INTERVAL) * 100;
+    const prog = setInterval(() => setProgress(p => Math.min(p + inc, 100)), step);
+    const adv  = setTimeout(() => {
+      setDir(1);
+      setIdx(i => (i + 1) % TESTIMONIALS.length);
+    }, INTERVAL);
+    return () => { clearInterval(prog); clearTimeout(adv); };
+  }, [idx, paused]);
 
-//   const goTo = (n: number) => {
-//     setDir(n > idx ? 1 : -1);
-//     setProgress(0);
-//     setIdx(n);
-//   };
-//   const prev = () => goTo((idx - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
-//   const next = () => goTo((idx + 1) % TESTIMONIALS.length);
+  const goTo = (n: number) => {
+    setDir(n > idx ? 1 : -1);
+    setProgress(0);
+    setIdx(n);
+  };
+  const prev = () => goTo((idx - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
+  const next = () => goTo((idx + 1) % TESTIMONIALS.length);
 
-//   const variants = {
-//     enter:  (d: number) => ({ x: d > 0 ? 60 : -60, opacity: 0 }),
-//     center: { x: 0, opacity: 1 },
-//     exit:   (d: number) => ({ x: d > 0 ? -60 : 60, opacity: 0 }),
-//   };
+  const variants = {
+    enter:  (d: number) => ({ x: d > 0 ? 60 : -60, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit:   (d: number) => ({ x: d > 0 ? -60 : 60, opacity: 0 }),
+  };
 
-//   const t = TESTIMONIALS[idx];
+  const t = TESTIMONIALS[idx];
 
-//   return (
-//     <div
-//       className="relative mx-auto"
-//       style={{ maxWidth: "860px" }}
-//       onMouseEnter={() => setPaused(true)}
-//       onMouseLeave={() => setPaused(false)}
-//     >
-//       <div
-//         className="relative px-6 sm:px-10 md:px-20 py-10 md:py-16"
-//         style={{
-//           background: "white",
-//           border: "1px solid rgba(28,169,201,0.18)",
-//           boxShadow: "0 8px 48px rgba(2,39,74,0.07)",
-//         }}
-//       >
-//         <span
-//           className="absolute top-6 left-6 sm:top-8 sm:left-8 md:left-12 font-serif select-none pointer-events-none"
-//           style={{ color: "#1CA9C9", fontSize: "4rem", lineHeight: 1, opacity: 0.12 }}
-//         >
-//           &ldquo;
-//         </span>
-//         <div className="overflow-hidden" style={{ minHeight: "180px" }}>
-//           <AnimatePresence custom={dir} mode="wait">
-//             <motion.div
-//               key={idx}
-//               custom={dir}
-//               variants={variants}
-//               initial="enter"
-//               animate="center"
-//               exit="exit"
-//               transition={{ duration: 0.42, ease: [0.76, 0, 0.24, 1] }}
-//               className="flex flex-col items-center text-center gap-6 sm:gap-7"
-//             >
-//               {/* Quote */}
-//               <p
-//                 className="font-playfair text-base sm:text-lg md:text-xl font-light italic leading-relaxed"
-//                 style={{ color: "#02274A", maxWidth: "640px" }}
-//               >
-//                 {t.quote}
-//               </p>
+  return (
+    <div
+      className="relative mx-auto"
+      style={{ maxWidth: "860px" }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {/* Card */}
+      <div
+        className="relative px-6 sm:px-10 md:px-20 py-10 md:py-16"
+        style={{
+          background: "white",
+          border: "1px solid rgba(28,169,201,0.18)",
+          boxShadow: "0 8px 48px rgba(2,39,74,0.07)",
+        }}
+      >
+        {/* Opening quote mark — decorative */}
+        <span
+          className="absolute top-6 left-6 sm:top-8 sm:left-8 md:left-12 font-serif select-none pointer-events-none"
+          style={{ color: "#1CA9C9", fontSize: "4rem", lineHeight: 1, opacity: 0.12 }}
+        >
+          &ldquo;
+        </span>
 
-//               {/* Attribution */}
-//               <div className="flex flex-col items-center gap-1.5">
-//                 <div
-//                   className="w-8 h-px mb-2"
-//                   style={{ background: "linear-gradient(90deg, transparent, #1CA9C9, transparent)" }}
-//                 />
-//                 <p
-//                   className="text-[11px] uppercase tracking-[0.35em] font-medium"
-//                   style={{ color: "rgba(2,39,74,0.5)" }}
-//                 >
-//                   {t.role}
-//                 </p>
-//                 <p
-//                   className="text-[10px] uppercase tracking-[0.3em]"
-//                   style={{ color: "#1CA9C9" }}
-//                 >
-//                   {t.location}
-//                 </p>
-//               </div>
-//             </motion.div>
-//           </AnimatePresence>
-//         </div>
+        {/* Slide content */}
+        <div className="overflow-hidden" style={{ minHeight: "180px" }}>
+          <AnimatePresence custom={dir} mode="wait">
+            <motion.div
+              key={idx}
+              custom={dir}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.42, ease: [0.76, 0, 0.24, 1] }}
+              className="flex flex-col items-center text-center gap-6 sm:gap-7"
+            >
+              {/* Quote */}
+              <p
+                className="font-playfair text-base sm:text-lg md:text-xl font-light italic leading-relaxed"
+                style={{ color: "#02274A", maxWidth: "640px" }}
+              >
+                {t.quote}
+              </p>
 
-//         {/* Progress bar — inside card, bottom edge */}
-//         <div
-//           className="absolute bottom-0 left-0 right-0 h-[2px] overflow-hidden"
-//           style={{ background: "rgba(2,39,74,0.06)" }}
-//         >
-//           <motion.div
-//             className="h-full"
-//             style={{ background: "#1CA9C9" }}
-//             animate={{ width: `${progress}%` }}
-//             transition={{ duration: 0 }}
-//           />
-//         </div>
-//       </div>
+              {/* Attribution */}
+              <div className="flex flex-col items-center gap-1.5">
+                <div
+                  className="w-8 h-px mb-2"
+                  style={{ background: "linear-gradient(90deg, transparent, #1CA9C9, transparent)" }}
+                />
+                <p
+                  className="text-[11px] uppercase tracking-[0.35em] font-medium"
+                  style={{ color: "rgba(2,39,74,0.5)" }}
+                >
+                  {t.role}
+                </p>
+                <p
+                  className="text-[10px] uppercase tracking-[0.3em]"
+                  style={{ color: "#1CA9C9" }}
+                >
+                  {t.location}
+                </p>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
-//       {/* Prev arrow — outside card left */}
-//       <button
-//         onClick={prev}
-//         aria-label="Previous testimonial"
-//         className="absolute top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center transition-all group"
-//         style={{
-//           left: "-64px",
-//           width: "44px",
-//           height: "44px",
-//           border: "1px solid rgba(28,169,201,0.35)",
-//           background: "white",
-//           color: "#1CA9C9",
-//           boxShadow: "0 2px 12px rgba(2,39,74,0.08)",
-//         }}
-//         onMouseEnter={e => {
-//           (e.currentTarget as HTMLButtonElement).style.background = "#1CA9C9";
-//           (e.currentTarget as HTMLButtonElement).style.color = "white";
-//         }}
-//         onMouseLeave={e => {
-//           (e.currentTarget as HTMLButtonElement).style.background = "white";
-//           (e.currentTarget as HTMLButtonElement).style.color = "#1CA9C9";
-//         }}
-//       >
-//         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-//           <path d="M9 2L4 7l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-//         </svg>
-//       </button>
+        {/* Progress bar — inside card, bottom edge */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-[2px] overflow-hidden"
+          style={{ background: "rgba(2,39,74,0.06)" }}
+        >
+          <motion.div
+            className="h-full"
+            style={{ background: "#1CA9C9" }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0 }}
+          />
+        </div>
+      </div>
 
-//       {/* Next arrow — outside card right */}
-//       <button
-//         onClick={next}
-//         aria-label="Next testimonial"
-//         className="absolute top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center transition-all"
-//         style={{
-//           right: "-64px",
-//           width: "44px",
-//           height: "44px",
-//           border: "1px solid rgba(28,169,201,0.35)",
-//           background: "white",
-//           color: "#1CA9C9",
-//           boxShadow: "0 2px 12px rgba(2,39,74,0.08)",
-//         }}
-//         onMouseEnter={e => {
-//           (e.currentTarget as HTMLButtonElement).style.background = "#1CA9C9";
-//           (e.currentTarget as HTMLButtonElement).style.color = "white";
-//         }}
-//         onMouseLeave={e => {
-//           (e.currentTarget as HTMLButtonElement).style.background = "white";
-//           (e.currentTarget as HTMLButtonElement).style.color = "#1CA9C9";
-//         }}
-//       >
-//         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-//           <path d="M5 2l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-//         </svg>
-//       </button>
+      {/* Prev arrow — outside card left */}
+      <button
+        onClick={prev}
+        aria-label="Previous testimonial"
+        className="absolute top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center transition-all group"
+        style={{
+          left: "-64px",
+          width: "44px",
+          height: "44px",
+          border: "1px solid rgba(28,169,201,0.35)",
+          background: "white",
+          color: "#1CA9C9",
+          boxShadow: "0 2px 12px rgba(2,39,74,0.08)",
+        }}
+        onMouseEnter={e => {
+          (e.currentTarget as HTMLButtonElement).style.background = "#1CA9C9";
+          (e.currentTarget as HTMLButtonElement).style.color = "white";
+        }}
+        onMouseLeave={e => {
+          (e.currentTarget as HTMLButtonElement).style.background = "white";
+          (e.currentTarget as HTMLButtonElement).style.color = "#1CA9C9";
+        }}
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M9 2L4 7l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
 
-//       {/* Mobile prev/next row */}
-//       <div className="flex md:hidden justify-center gap-3 mt-5">
-//         <button
-//           onClick={prev}
-//           aria-label="Previous"
-//           className="flex items-center justify-center"
-//           style={{
-//             width: "40px", height: "40px",
-//             border: "1px solid rgba(28,169,201,0.4)",
-//             background: "white", color: "#1CA9C9",
-//           }}
-//         >
-//           <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
-//             <path d="M9 2L4 7l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-//           </svg>
-//         </button>
-//         <button
-//           onClick={next}
-//           aria-label="Next"
-//           className="flex items-center justify-center"
-//           style={{
-//             width: "40px", height: "40px",
-//             border: "1px solid rgba(28,169,201,0.4)",
-//             background: "white", color: "#1CA9C9",
-//           }}
-//         >
-//           <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
-//             <path d="M5 2l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-//           </svg>
-//         </button>
-//       </div>
+      {/* Next arrow — outside card right */}
+      <button
+        onClick={next}
+        aria-label="Next testimonial"
+        className="absolute top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center transition-all"
+        style={{
+          right: "-64px",
+          width: "44px",
+          height: "44px",
+          border: "1px solid rgba(28,169,201,0.35)",
+          background: "white",
+          color: "#1CA9C9",
+          boxShadow: "0 2px 12px rgba(2,39,74,0.08)",
+        }}
+        onMouseEnter={e => {
+          (e.currentTarget as HTMLButtonElement).style.background = "#1CA9C9";
+          (e.currentTarget as HTMLButtonElement).style.color = "white";
+        }}
+        onMouseLeave={e => {
+          (e.currentTarget as HTMLButtonElement).style.background = "white";
+          (e.currentTarget as HTMLButtonElement).style.color = "#1CA9C9";
+        }}
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M5 2l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
 
-//       {/* Dot nav */}
-//       <div className="flex justify-center gap-2 mt-6">
-//         {TESTIMONIALS.map((_, i) => (
-//           <button
-//             key={i}
-//             onClick={() => goTo(i)}
-//             aria-label={`Go to testimonial ${i + 1}`}
-//             className="transition-all"
-//             style={{
-//               width: i === idx ? "28px" : "7px",
-//               height: "7px",
-//               background: i === idx ? "#1CA9C9" : "rgba(2,39,74,0.15)",
-//               borderRadius: "4px",
-//             }}
-//           />
-//         ))}
-//       </div>
-//     </div>
-//   );
-// }
+      {/* Mobile prev/next row */}
+      <div className="flex md:hidden justify-center gap-3 mt-5">
+        <button
+          onClick={prev}
+          aria-label="Previous"
+          className="flex items-center justify-center"
+          style={{
+            width: "40px", height: "40px",
+            border: "1px solid rgba(28,169,201,0.4)",
+            background: "white", color: "#1CA9C9",
+          }}
+        >
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+            <path d="M9 2L4 7l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+        <button
+          onClick={next}
+          aria-label="Next"
+          className="flex items-center justify-center"
+          style={{
+            width: "40px", height: "40px",
+            border: "1px solid rgba(28,169,201,0.4)",
+            background: "white", color: "#1CA9C9",
+          }}
+        >
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+            <path d="M5 2l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Dot nav */}
+      <div className="flex justify-center gap-2 mt-6">
+        {TESTIMONIALS.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goTo(i)}
+            aria-label={`Go to testimonial ${i + 1}`}
+            className="transition-all"
+            style={{
+              width: i === idx ? "28px" : "7px",
+              height: "7px",
+              background: i === idx ? "#1CA9C9" : "rgba(2,39,74,0.15)",
+              borderRadius: "4px",
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+/* ══════════════════════════════════════════════════════
+   FEATURED INVENTORY HELPERS
+══════════════════════════════════════════════════════ */
+const FLX_CLARITY = new Set(["FL", "IF"]);
+
+function FeaturedDiamondSVG({ shape }: { shape: string }) {
+  const fill = "#E8F4FF";
+  const stroke = "rgba(184,214,240,0.7)";
+  const bright = "rgba(255,255,255,0.55)";
+  const facet = "rgba(184,214,240,0.3)";
+  const s = shape.split(" ")[0]; // first word: "Round", "Oval", "Emerald", "Princess", "Cushion", "Pear"
+
+  return (
+    <svg viewBox="0 0 200 200" width="100%" height="100%">
+      <defs>
+        <radialGradient id={`fdg-${s}`} cx="40%" cy="35%" r="60%">
+          <stop offset="0%" stopColor="white" stopOpacity="0.22" />
+          <stop offset="100%" stopColor={fill} stopOpacity="0.04" />
+        </radialGradient>
+      </defs>
+      {s === "Round" && <>
+        <circle cx="100" cy="100" r="88" fill={fill} fillOpacity="0.12" stroke={stroke} strokeWidth="1.2" />
+        <polygon points="100,38 120,46 128,66 120,86 100,94 80,86 72,66 80,46" fill={bright} fillOpacity="0.2" stroke={bright} strokeWidth="1" />
+        <line x1="100" y1="38" x2="100" y2="12" stroke={facet} strokeWidth="0.8" />
+        <line x1="128" y1="66" x2="188" y2="66" stroke={facet} strokeWidth="0.8" />
+        <line x1="100" y1="94" x2="100" y2="188" stroke={facet} strokeWidth="0.8" />
+        <line x1="72" y1="66" x2="12" y2="66" stroke={facet} strokeWidth="0.8" />
+        <ellipse cx="88" cy="56" rx="8" ry="5" fill="rgba(255,255,255,0.4)" transform="rotate(-30,88,56)" />
+      </>}
+      {s === "Oval" && <>
+        <ellipse cx="100" cy="100" rx="60" ry="88" fill={fill} fillOpacity="0.12" stroke={stroke} strokeWidth="1.2" />
+        <polygon points="100,38 116,52 120,70 116,88 100,102 84,88 80,70 84,52" fill={bright} fillOpacity="0.2" stroke={bright} strokeWidth="1" />
+        <line x1="100" y1="12" x2="100" y2="38" stroke={facet} strokeWidth="0.8" />
+        <line x1="100" y1="102" x2="100" y2="188" stroke={facet} strokeWidth="0.8" />
+        <ellipse cx="90" cy="54" rx="7" ry="4" fill="rgba(255,255,255,0.45)" transform="rotate(-25,90,54)" />
+      </>}
+      {s === "Emerald" && <>
+        <polygon points="30,12 170,12 188,30 188,170 170,188 30,188 12,170 12,30" fill={fill} fillOpacity="0.12" stroke={stroke} strokeWidth="1.2" />
+        <rect x="48" y="44" width="104" height="112" fill={bright} fillOpacity="0.16" stroke={bright} strokeWidth="1" />
+        <line x1="30" y1="12" x2="48" y2="44" stroke={facet} strokeWidth="0.8" />
+        <line x1="170" y1="12" x2="152" y2="44" stroke={facet} strokeWidth="0.8" />
+        <line x1="170" y1="188" x2="152" y2="156" stroke={facet} strokeWidth="0.8" />
+        <line x1="30" y1="188" x2="48" y2="156" stroke={facet} strokeWidth="0.8" />
+        <rect x="72" y="64" width="56" height="72" fill="rgba(255,255,255,0.07)" stroke={facet} strokeWidth="0.5" />
+        <ellipse cx="86" cy="60" rx="8" ry="4" fill="rgba(255,255,255,0.45)" transform="rotate(-20,86,60)" />
+      </>}
+      {s === "Princess" && <>
+        <rect x="12" y="12" width="176" height="176" fill={fill} fillOpacity="0.12" stroke={stroke} strokeWidth="1.2" />
+        <rect x="44" y="44" width="112" height="112" fill={bright} fillOpacity="0.16" stroke={bright} strokeWidth="1" />
+        <line x1="12" y1="12" x2="44" y2="44" stroke={facet} strokeWidth="0.8" />
+        <line x1="188" y1="12" x2="156" y2="44" stroke={facet} strokeWidth="0.8" />
+        <line x1="188" y1="188" x2="156" y2="156" stroke={facet} strokeWidth="0.8" />
+        <line x1="12" y1="188" x2="44" y2="156" stroke={facet} strokeWidth="0.8" />
+        <ellipse cx="86" cy="58" rx="8" ry="4" fill="rgba(255,255,255,0.45)" transform="rotate(-25,86,58)" />
+      </>}
+      {(s === "Cushion" || s === "Pear") && <>
+        <rect x="16" y="16" width="168" height="168" rx="30" fill={fill} fillOpacity="0.12" stroke={stroke} strokeWidth="1.2" />
+        <polygon points="100,44 132,56 144,88 132,120 100,132 68,120 56,88 68,56" fill={bright} fillOpacity="0.18" stroke={bright} strokeWidth="1" />
+        <line x1="68" y1="56" x2="28" y2="28" stroke={facet} strokeWidth="0.8" />
+        <line x1="132" y1="56" x2="172" y2="28" stroke={facet} strokeWidth="0.8" />
+        <line x1="144" y1="88" x2="186" y2="88" stroke={facet} strokeWidth="0.8" />
+        <line x1="56" y1="88" x2="14" y2="88" stroke={facet} strokeWidth="0.8" />
+        <ellipse cx="85" cy="60" rx="8" ry="5" fill="rgba(255,255,255,0.45)" transform="rotate(-30,85,60)" />
+      </>}
+    </svg>
+  );
+}
+
+function FeaturedStoneCard({
+  stockId, shape, carat, color, clarity, cut, measurements, polish, symmetry, fluorescence, certification,
+}: {
+  stockId: string; shape: string; carat: number; color: string; clarity: string;
+  cut: string; measurements: string; polish: string; symmetry: string;
+  fluorescence: string; certification: "GIA" | "IGI";
+}) {
+  const isFLX = FLX_CLARITY.has(clarity);
+  const certColor = certification === "GIA" ? "#1CA9C9" : "#8B5CF6";
+  const certBg    = certification === "GIA" ? "rgba(28,169,201,0.12)" : "rgba(139,92,246,0.12)";
+  const certBorder= certification === "GIA" ? "rgba(28,169,201,0.4)"  : "rgba(139,92,246,0.4)";
+
+  return (
+    <Link href="/diamonds" style={{ textDecoration: "none" }}>
+      <div
+        className="group flex flex-col h-full cursor-pointer transition-all duration-300"
+        style={{
+          background: "#021C38",
+          border: "1px solid rgba(28,169,201,0.12)",
+        }}
+        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(28,169,201,0.35)"; }}
+        onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(28,169,201,0.12)"; }}
+      >
+        {/* Top bar: stock ID + cert badge */}
+        <div
+          className="flex items-center justify-between px-4 py-2.5 shrink-0"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+        >
+          <span className="font-mono text-[9px] tracking-widest" style={{ color: "rgba(28,169,201,0.7)" }}>
+            {stockId}
+          </span>
+          <div className="flex items-center gap-1.5">
+            {certification === "GIA" && (
+              <img src="/gia-logo.png" alt="GIA" style={{ width: "14px", height: "14px", objectFit: "contain", opacity: 0.9, mixBlendMode: "screen" }} />
+            )}
+            <span
+              className="text-[8px] font-semibold uppercase tracking-[0.28em] px-2 py-0.5"
+              style={{ background: certBg, border: `1px solid ${certBorder}`, color: certColor, borderRadius: "4px" }}
+            >
+              {certification} Certified
+            </span>
+          </div>
+        </div>
+
+        {/* Diamond image area */}
+        <div
+          className="relative flex items-center justify-center"
+          style={{ aspectRatio: "1", background: "radial-gradient(circle at 40% 35%, rgba(28,169,201,0.06) 0%, #011F3A 70%)", overflow: "hidden" }}
+        >
+          {/* Sparkle corners */}
+          <div className="absolute top-3 right-3 w-0.5 h-0.5 rounded-full" style={{ background: "#1CA9C9", boxShadow: "0 0 6px #1CA9C9", opacity: 0.6 }} />
+          <div className="absolute bottom-5 left-4 w-0.5 h-0.5 rounded-full" style={{ background: "white", boxShadow: "0 0 4px white", opacity: 0.4 }} />
+          <div className="absolute top-8 left-6 w-px h-px rounded-full" style={{ background: "#1CA9C9", boxShadow: "0 0 8px #1CA9C9", opacity: 0.5 }} />
+
+          {/* SVG diamond graphic */}
+          <div className="w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-700" style={{ padding: "10%" }}>
+            <FeaturedDiamondSVG shape={shape} />
+          </div>
+
+          {/* FL/IF conversion badge */}
+          {isFLX && (
+            <div className="absolute bottom-3 right-3 px-2 py-0.5" style={{ background: "rgba(28,169,201,0.15)", border: "1px solid rgba(28,169,201,0.35)" }}>
+              <span className="text-[7px] uppercase tracking-[0.35em] font-semibold" style={{ color: "#1CA9C9" }}>IF→FL ✦</span>
+            </div>
+          )}
+        </div>
+
+        {/* Content */}
+        <div className="flex flex-col flex-1 px-5 pb-5 pt-4 gap-4">
+
+          {/* Shape + carat row */}
+          <div className="flex items-start justify-between">
+            <div>
+              <h3 className="font-serif text-white text-lg leading-tight">{shape}</h3>
+              <p className="text-xs font-semibold tracking-widest mt-0.5" style={{ color: "#1CA9C9" }}>
+                {carat.toFixed(2)} CT
+              </p>
+            </div>
+            <div className="flex flex-col items-end gap-1">
+              <div
+                className="px-2.5 py-1 text-[10px] font-bold tracking-widest"
+                style={{
+                  background: isFLX ? "rgba(28,169,201,0.15)" : "rgba(255,255,255,0.06)",
+                  border: `1px solid ${isFLX ? "rgba(28,169,201,0.5)" : "rgba(255,255,255,0.1)"}`,
+                  color: isFLX ? "#1CA9C9" : "rgba(255,255,255,0.55)",
+                }}
+              >
+                {clarity}
+              </div>
+              <div
+                className="px-2 py-0.5 text-[9px] font-semibold tracking-widest"
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.45)" }}
+              >
+                {color}
+              </div>
+            </div>
+          </div>
+
+          {/* 4 C's grid */}
+          <div
+            className="grid grid-cols-4 gap-0 text-center"
+            style={{ border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.02)" }}
+          >
+            {[
+              { label: "Cut",     value: cut === "Very Good" ? "VG" : cut === "Excellent" ? "EX" : cut },
+              { label: "Color",   value: color },
+              { label: "Clarity", value: clarity },
+              { label: "Carat",   value: carat.toFixed(2) },
+            ].map((c, i) => (
+              <div
+                key={c.label}
+                className="flex flex-col items-center py-3"
+                style={{ borderRight: i < 3 ? "1px solid rgba(255,255,255,0.08)" : "none" }}
+              >
+                <span className="text-[8px] uppercase tracking-[0.18em] mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>{c.label}</span>
+                <span
+                  className="text-[13px] font-semibold"
+                  style={{ color: (c.label === "Clarity" && isFLX) ? "#1CA9C9" : "rgba(255,255,255,0.85)" }}
+                >
+                  {c.value}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Details row */}
+          <div className="space-y-2" style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "12px" }}>
+            <div className="flex items-center justify-between">
+              <span className="text-[9px] uppercase tracking-[0.22em]" style={{ color: "rgba(255,255,255,0.28)" }}>Measurements</span>
+              <span className="font-mono text-[10px]" style={{ color: "rgba(255,255,255,0.55)" }}>{measurements}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-[9px] uppercase tracking-[0.22em]" style={{ color: "rgba(255,255,255,0.28)" }}>Polish / Sym.</span>
+              <span className="font-mono text-[10px]" style={{ color: "rgba(255,255,255,0.55)" }}>
+                {polish.replace("Excellent","EX").replace("Very Good","VG")} · {symmetry.replace("Excellent","EX").replace("Very Good","VG")}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-[9px] uppercase tracking-[0.22em]" style={{ color: "rgba(255,255,255,0.28)" }}>Fluorescence</span>
+              <span className="font-mono text-[10px]" style={{ color: "rgba(255,255,255,0.55)" }}>{fluorescence}</span>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="mt-auto">
+            <div
+              className="w-full py-3.5 text-[10px] uppercase tracking-[0.4em] font-semibold text-center transition-all"
+              style={{ background: "rgba(28,169,201,0.08)", border: "1px solid rgba(28,169,201,0.3)", color: "#1CA9C9" }}
+            >
+              Request Price
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 /* ══════════════════════════════════════════════════════
    COMPONENT
 ══════════════════════════════════════════════════════ */
@@ -1288,6 +1519,34 @@ export default function Home() {
             </div>
           </div>
 
+          {/* 50/50 profit split callout */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.7 }}
+            className="mt-6 sm:mt-8 p-6 sm:p-8 flex flex-col sm:flex-row gap-5 sm:gap-10 items-start sm:items-center"
+            style={{ background: "rgba(28,169,201,0.05)", border: "1px solid rgba(28,169,201,0.2)" }}
+          >
+            <div className="flex-1">
+              <p className="font-serif text-lg sm:text-xl mb-2" style={{ color: "#02274A" }}>
+                We only earn when you earn — 50/50 profit split.
+              </p>
+              <p className="text-sm leading-relaxed" style={{ color: "rgba(2,39,74,0.5)" }}>
+                No upfront cost. No conversion fee. We calculate the IF value, the projected FL value, document it in writing, then share the profit we create together. If we can't do it, we'll tell you that before touching the stone.
+              </p>
+            </div>
+            <Link href="/investment" className="shrink-0">
+              <Button
+                className="rounded-none text-xs uppercase tracking-[0.18em] font-medium text-white hover:opacity-90 whitespace-nowrap"
+                style={{ background: "#1CA9C9", height: "46px", padding: "0 1.75rem" }}
+                data-testid="btn-iftfl-details"
+              >
+                Full Conversion Details →
+              </Button>
+            </Link>
+          </motion.div>
+
           {/* Value teaser */}
           <motion.p
             initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.5, duration: 0.8 }}
@@ -1394,45 +1653,160 @@ export default function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════
-          8. FEATURED INVENTORY
+          MANUFACTURING STORY — We make them
       ══════════════════════════════════════════════════ */}
       <section className="py-16 sm:py-20 md:py-28 px-4 sm:px-6" style={{ background: "white" }}>
         <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-10 sm:gap-16 items-center">
+
+            {/* Left: video placeholder */}
+            <motion.div
+              initial={{ opacity: 0, x: -24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: EASE }}
+            >
+              <div
+                className="w-full overflow-hidden shadow-xl relative"
+                style={{ aspectRatio: "16/9", background: "#011a36" }}
+              >
+                <iframe
+                  className="w-full h-full"
+                  src="https://www.youtube.com/embed/pPMCz3DN7u4?autoplay=0&controls=1"
+                  title="Manufacturing Lab — FLX Diamonds"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+              <p className="text-[9px] uppercase tracking-[0.32em] mt-3 font-medium" style={{ color: "rgba(2,39,74,0.3)" }}>
+                Manufacturing lab · Geelong, Victoria
+              </p>
+            </motion.div>
+
+            {/* Right: text */}
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger}
+              className="space-y-5 sm:space-y-6"
+            >
+              <motion.p variants={up} className="text-[10px] uppercase tracking-[0.45em] font-medium" style={{ color: "#1CA9C9" }}>
+                Our Process
+              </motion.p>
+              <motion.h2 variants={up} className="font-serif text-3xl sm:text-4xl md:text-5xl leading-tight" style={{ color: "#02274A" }}>
+                We make them.<br />We don't just sell them.
+              </motion.h2>
+              <motion.div variants={up}><span className="ocean-line" /></motion.div>
+              <motion.p variants={up} className="text-sm sm:text-base leading-relaxed" style={{ color: "rgba(2,39,74,0.55)" }}>
+                Most diamond businesses source from wholesalers. We cut and polish in our own manufacturing lab. That's why we can stand behind every stone we sell — and offer services no retailer can.
+              </motion.p>
+              <motion.div variants={up} className="grid grid-cols-3 gap-4 pt-2">
+                {[
+                  { label: "Factory direct", sub: "No middlemen" },
+                  { label: "GIA / IGI", sub: "Every stone certified" },
+                  { label: "Aus-wide", sub: "Insured & tracked" },
+                ].map(item => (
+                  <div key={item.label} className="flex flex-col gap-1 p-3 sm:p-4" style={{ background: "rgba(2,39,74,0.03)", border: "1px solid rgba(2,39,74,0.07)" }}>
+                    <span className="font-serif text-sm sm:text-base leading-snug" style={{ color: "#02274A" }}>{item.label}</span>
+                    <span className="text-[9px] uppercase tracking-[0.3em]" style={{ color: "rgba(2,39,74,0.38)" }}>{item.sub}</span>
+                  </div>
+                ))}
+              </motion.div>
+              <motion.div variants={up}>
+                <Link href="/about">
+                  <Button
+                    className="rounded-none text-xs uppercase tracking-[0.18em] font-medium text-white hover:opacity-90"
+                    style={{ background: "#1CA9C9", height: "48px", padding: "0 2rem" }}
+                    data-testid="btn-about-lab"
+                  >
+                    About Our Lab →
+                  </Button>
+                </Link>
+              </motion.div>
+            </motion.div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════
+          8. FEATURED INVENTORY
+      ══════════════════════════════════════════════════ */}
+      <section className="py-16 sm:py-20 md:py-28 px-4 sm:px-6" style={{ background: "#02274A" }}>
+        <div className="max-w-7xl mx-auto">
+
+          {/* Header row */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 sm:mb-14 gap-4">
-            <div>
-              <ScrollReveal delay={0}>
-                <p className="text-[10px] uppercase tracking-[0.35em] mb-2 font-medium" style={{ color: "#1CA9C9" }}>
-                  By Application Only
-                </p>
-              </ScrollReveal>
-              <ViewportWordReveal text="Featured Inventory" className="font-serif text-3xl sm:text-4xl" style={{ color: "#02274A" }} as="h2" />
-            </div>
-            <ScrollReveal delay={0.2}>
-              <Link href="/diamonds" className="flex items-center gap-2 text-[10px] uppercase tracking-wider font-medium transition-colors" style={{ color: "rgba(2,39,74,0.4)" }}>
+            <motion.div
+              initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} variants={stagger}
+            >
+              <motion.p variants={up} className="text-[10px] uppercase tracking-[0.4em] mb-3 font-medium" style={{ color: "#1CA9C9" }}>
+                By Application Only
+              </motion.p>
+              <motion.h2 variants={up} className="font-serif text-3xl sm:text-4xl" style={{ color: "rgba(255,255,255,0.88)" }}>
+                Featured Inventory
+              </motion.h2>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.3, duration: 0.6 }}
+            >
+              <Link
+                href="/diamonds"
+                className="flex items-center gap-2 text-[10px] uppercase tracking-wider font-medium transition-all hover:gap-3"
+                style={{ color: "rgba(28,169,201,0.7)" }}
+              >
                 View All Stones <ArrowRight size={11} />
               </Link>
-            </ScrollReveal>
+            </motion.div>
           </div>
 
-          <StaggerGroup className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {/* Stone cards — 1 col mobile, 2 col tablet, 3 col desktop */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {[
-              { id: 1, shape: "Round Brilliant",    image: "/diamond-3.png", carat: "2.01", color: "D", clarity: "FL",   cut: "Excellent" },
-              { id: 2, shape: "Oval Cut",           image: "/diamond-3.png", carat: "1.52", color: "E", clarity: "IF",   cut: "Excellent" },
-              { id: 3, shape: "Emerald Cut",        image: "/diamond-3.png", carat: "3.15", color: "F", clarity: "IF",   cut: "Excellent" },
-            ].map((d) => (
-              <StaggerItem key={d.id}>
-                <DiamondCard
-                  image={d.image}
-                  shape={d.shape}
-                  carat={d.carat}
-                  color={d.color}
-                  clarity={d.clarity}
-                  cut={d.cut}
-                  onRequestPrice={() => {}}
-                />
-              </StaggerItem>
+              {
+                stockId: "FLX-2401-RB",  shape: "Round Brilliant", carat: 2.01, color: "D", clarity: "FL",   cut: "Excellent",
+                measurements: "8.10–8.14×4.99", polish: "Excellent", symmetry: "Excellent", fluorescence: "None", certification: "GIA" as const,
+              },
+              {
+                stockId: "FLX-2402-OV",  shape: "Oval Cut",        carat: 1.52, color: "E", clarity: "IF",   cut: "Excellent",
+                measurements: "9.07×6.08×3.74",  polish: "Excellent", symmetry: "Excellent", fluorescence: "None", certification: "GIA" as const,
+              },
+              {
+                stockId: "FLX-2403-EM",  shape: "Emerald Cut",     carat: 3.15, color: "F", clarity: "IF",   cut: "Excellent",
+                measurements: "9.62×7.23×5.01",  polish: "Excellent", symmetry: "Excellent", fluorescence: "None", certification: "GIA" as const,
+              },
+              {
+                stockId: "FLX-2404-PR",  shape: "Princess Cut",    carat: 1.75, color: "D", clarity: "VVS1", cut: "Excellent",
+                measurements: "6.64×6.61×4.62",  polish: "Excellent", symmetry: "Excellent", fluorescence: "None", certification: "GIA" as const,
+              },
+              {
+                stockId: "FLX-2405-CU",  shape: "Cushion Brilliant", carat: 2.40, color: "G", clarity: "VS1", cut: "Very Good",
+                measurements: "8.31×7.96×5.22",  polish: "Excellent", symmetry: "Very Good", fluorescence: "None", certification: "GIA" as const,
+              },
+              {
+                stockId: "FLX-2406-OV",  shape: "Oval Cut",        carat: 1.89, color: "E", clarity: "VVS2", cut: "Excellent",
+                measurements: "9.82×6.60×4.07",  polish: "Excellent", symmetry: "Excellent", fluorescence: "Faint", certification: "GIA" as const,
+              },
+            ].map((d, i) => (
+              <motion.div
+                key={d.stockId}
+                initial={{ opacity: 0, y: 32 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-20px" }}
+                transition={{ delay: i * 0.09, duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
+              >
+                <FeaturedStoneCard {...d} />
+              </motion.div>
             ))}
-          </StaggerGroup>
+          </div>
+
+          {/* Bottom note */}
+          <motion.p
+            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.5, duration: 0.7 }}
+            className="text-center text-[9px] uppercase tracking-[0.3em] mt-10 sm:mt-12"
+            style={{ color: "rgba(255,255,255,0.25)" }}
+          >
+            Trade pricing disclosed by secure email · ABN verification required · All stones GIA-certified
+          </motion.p>
         </div>
       </section>
 
@@ -1516,9 +1890,154 @@ export default function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════
+          TRADE PORTAL — For jewellers and designers
+      ══════════════════════════════════════════════════ */}
+      <section className="py-16 sm:py-20 md:py-28 px-4 sm:px-6" style={{ background: "white" }}>
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger}
+            className="mb-10 sm:mb-14"
+          >
+            <motion.p variants={up} className="text-[10px] uppercase tracking-[0.45em] mb-4 font-medium" style={{ color: "#1CA9C9" }}>
+              Trade Portal
+            </motion.p>
+            <motion.h2 variants={up} className="font-serif text-3xl sm:text-4xl md:text-5xl" style={{ color: "#02274A" }}>
+              Built for the trade.
+            </motion.h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-px" style={{ background: "rgba(2,39,74,0.06)" }}>
+            {/* Jewellers and designers */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="p-8 sm:p-10 flex flex-col gap-5"
+              style={{ background: "white" }}
+            >
+              <h3 className="font-serif text-xl sm:text-2xl" style={{ color: "#02274A" }}>Jewellers and designers</h3>
+              <p className="text-sm leading-relaxed flex-1" style={{ color: "rgba(2,39,74,0.55)" }}>
+                Melee sourcing, matched parcels, and memo requests. Register with your ABN — pricing always comes back to you personally by email. No retail pricing, no margins on top of margins.
+              </p>
+              <Link href="/trade">
+                <Button
+                  className="rounded-none text-xs uppercase tracking-[0.18em] font-medium text-white hover:opacity-90 w-full sm:w-auto"
+                  style={{ background: "#1CA9C9", height: "46px", padding: "0 1.75rem" }}
+                  data-testid="btn-trade-enquiry"
+                >
+                  Trade Enquiry →
+                </Button>
+              </Link>
+            </motion.div>
+
+            {/* How we work with jewellers */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="p-8 sm:p-10 flex flex-col gap-5"
+              style={{ background: "white" }}
+            >
+              <h3 className="font-serif text-xl sm:text-2xl" style={{ color: "#02274A" }}>How we work with jewellers</h3>
+              <p className="text-sm leading-relaxed flex-1" style={{ color: "rgba(2,39,74,0.55)" }}>
+                If a retail customer mentions they're working with a jeweller, we loop that jeweller in rather than transact directly. Our customers without a jeweller stay ours to refer — once they have one, that relationship is theirs.
+              </p>
+              <Link href="/trade">
+                <Button
+                  variant="outline"
+                  className="rounded-none text-xs uppercase tracking-[0.18em] hover:bg-[#02274A]/5 w-full sm:w-auto"
+                  style={{ borderColor: "rgba(2,39,74,0.2)", color: "#02274A", height: "46px", padding: "0 1.75rem" }}
+                  data-testid="btn-trade-account"
+                >
+                  Create Trade Account →
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════
+          INVESTMENT — FL diamonds as long-term asset
+      ══════════════════════════════════════════════════ */}
+      <section className="py-16 sm:py-20 md:py-28 px-4 sm:px-6" style={{ background: "#02274A" }}>
+        <div className="max-w-7xl mx-auto">
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-[10px] uppercase tracking-[0.45em] mb-10 sm:mb-14 font-medium"
+            style={{ color: "#1CA9C9" }}
+          >
+            Investment
+          </motion.p>
+          <div className="grid lg:grid-cols-2 gap-10 sm:gap-16 items-start">
+
+            {/* Left: heading + body + CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+            >
+              <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl mb-5 leading-tight" style={{ color: "rgba(255,255,255,0.88)" }}>
+                Natural FL diamonds as a long-term asset.
+              </h2>
+              <div className="w-10 h-px mb-5" style={{ background: "#1CA9C9" }} />
+              <p className="text-sm sm:text-base leading-relaxed mb-8" style={{ color: "rgba(255,255,255,0.45)" }}>
+                Natural diamonds — particularly FL clarity in desirable cuts — have held and appreciated in value over time. We work with buyers who want a portable, certifiable hard asset outside the share market. Same honest conversation, no hype.
+              </p>
+              <Link href="/investment">
+                <Button
+                  className="rounded-none text-xs uppercase tracking-[0.18em] font-medium text-white hover:opacity-90"
+                  style={{ background: "#1CA9C9", height: "48px", padding: "0 2rem" }}
+                  data-testid="btn-investment-consult"
+                >
+                  Book a Consultation →
+                </Button>
+              </Link>
+            </motion.div>
+
+            {/* Right: 4 numbered points */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.15 }}
+              className="flex flex-col"
+              style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
+            >
+              {[
+                { n: "01", text: "FL and IF in D–F colour represent the top 1% of all GIA-graded stones globally." },
+                { n: "02", text: "Tangible, portable, stateless — independent of any bank or financial system." },
+                { n: "03", text: "The IF→FL conversion creates a new GIA certificate with fully documented and verifiable uplift." },
+                { n: "04", text: "We advise on stone selection, market timing, and verified re-sale pathways. No salesmanship." },
+              ].map((item, i) => (
+                <motion.div
+                  key={item.n}
+                  initial={{ opacity: 0, x: 16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 + 0.2, duration: 0.55 }}
+                  className="flex gap-5 items-start py-5"
+                  style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+                >
+                  <span className="font-mono text-[10px] shrink-0 mt-0.5 w-6" style={{ color: "rgba(28,169,201,0.55)" }}>{item.n}</span>
+                  <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>{item.text}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════
           9b. SOCIAL PROOF — Anonymised testimonials
       ══════════════════════════════════════════════════ */}
-      {/* <section className="py-16 sm:py-24 px-4 sm:px-6" style={{ background: "#F4F8FC" }}>
+      <section className="py-16 sm:py-24 px-4 sm:px-6" style={{ background: "#F4F8FC" }}>
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger}
@@ -1531,6 +2050,8 @@ export default function Home() {
               What the trade says.
             </motion.h2>
           </motion.div>
+
+          {/* Testimonial slider: add side padding on mobile so arrows don't overlap content */}
           <div className="px-0 md:px-16">
             <TestimonialSlider />
           </div>
@@ -1544,12 +2065,75 @@ export default function Home() {
             All testimonials are anonymised by request. Full references available to verified trade partners.
           </motion.p>
         </div>
-      </section> */}
+      </section>
+
+      {/* ══════════════════════════════════════════════════
+          NO PITCH — Direct multi-CTA closing bar
+      ══════════════════════════════════════════════════ */}
+      <section
+        className="py-16 sm:py-20 px-4 sm:px-6 text-center"
+        style={{ background: "white", borderTop: "1px solid rgba(2,39,74,0.07)", borderBottom: "1px solid rgba(2,39,74,0.07)" }}
+      >
+        <div className="max-w-3xl mx-auto">
+          <motion.div
+            initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger}
+            className="space-y-5 sm:space-y-6"
+          >
+            <motion.h2 variants={up} className="font-serif text-3xl sm:text-4xl md:text-5xl" style={{ color: "#02274A" }}>
+              No pitch. Just a conversation.
+            </motion.h2>
+            <motion.p variants={up} className="text-sm sm:text-base leading-relaxed mx-auto max-w-xl" style={{ color: "rgba(2,39,74,0.5)" }}>
+              Buying, upgrading, investing, or sourcing for trade — we're straightforward people. Start here.
+            </motion.p>
+            <motion.div variants={up} className="flex flex-wrap justify-center gap-3 pt-2">
+              <Link href="/diamonds">
+                <Button
+                  className="rounded-none text-xs uppercase tracking-[0.18em] font-medium text-white hover:opacity-90"
+                  style={{ background: "#02274A", height: "46px", padding: "0 1.75rem" }}
+                  data-testid="btn-nopitch-browse"
+                >
+                  Browse Stones
+                </Button>
+              </Link>
+              <Link href="/contact">
+                <Button
+                  variant="outline"
+                  className="rounded-none text-xs uppercase tracking-[0.18em] hover:bg-[#02274A]/5"
+                  style={{ borderColor: "rgba(2,39,74,0.22)", color: "#02274A", height: "46px", padding: "0 1.75rem" }}
+                  data-testid="btn-nopitch-talk"
+                >
+                  Talk to Us
+                </Button>
+              </Link>
+              <Link href="/contact">
+                <Button
+                  variant="outline"
+                  className="rounded-none text-xs uppercase tracking-[0.18em] hover:bg-[#02274A]/5"
+                  style={{ borderColor: "rgba(2,39,74,0.22)", color: "#02274A", height: "46px", padding: "0 1.75rem" }}
+                  data-testid="btn-nopitch-call"
+                >
+                  Book a Call
+                </Button>
+              </Link>
+              <Link href="/trade">
+                <Button
+                  variant="outline"
+                  className="rounded-none text-xs uppercase tracking-[0.18em] hover:bg-[#02274A]/5"
+                  style={{ borderColor: "rgba(2,39,74,0.22)", color: "#02274A", height: "46px", padding: "0 1.75rem" }}
+                  data-testid="btn-nopitch-trade"
+                >
+                  Trade Login
+                </Button>
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
 
       {/* ══════════════════════════════════════════════════
           FAQ
       ══════════════════════════════════════════════════ */}
-      {/* <FaqSection faqs={activeFaqs} /> */}
+      <FaqSection faqs={activeFaqs} />
 
       {/* ══════════════════════════════════════════════════
           11. CLOSING — Ocean panorama + CTA
