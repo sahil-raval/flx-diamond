@@ -10,14 +10,19 @@ import faqCategory from "./faqCategory";
 import service from "./service";
 import jewelleryCollection from "./jewelleryCollection";
 import conversionStone from "./conversionStone";
+import seoObject from "./seoObject";
 
 export const schemaTypes = [
+  /* Shared object types */
+  seoObject,
+  /* Singleton pages */
   siteSettings,
   homePage,
   aboutPage,
   investmentPage,
   tradePage,
   contactPage,
+  /* Collections */
   diamond,
   journalArticle,
   faqCategory,

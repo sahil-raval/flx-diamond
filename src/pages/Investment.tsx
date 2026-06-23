@@ -4,7 +4,8 @@ import { EASE } from "@/lib/motion";
 import { Link } from "wouter";
 import { useSanityQuery } from "@/lib/useSanityData";
 import { isSanityConfigured } from "@/lib/sanity";
-import { CONVERSION_STONES_QUERY } from "@/lib/sanity-queries";
+import { CONVERSION_STONES_QUERY, INVESTMENT_PAGE_QUERY } from "@/lib/sanity-queries";
+import SeoHead from "@/components/SeoHead";
 
 const up = {
   hidden: { opacity: 0, y: 22 },
@@ -59,6 +60,7 @@ const STONES = [
       comment: "Surface graining not shown",
       value: "AUD $62,000",
       note: "GIA Comments: surface grain only — not internal, fully removable.",
+      videoSrc: "/stone-before-2.mp4" as string | null,
       certPdf: null,
       certLabel: null,
     },
@@ -75,6 +77,36 @@ const STONES = [
     uplift: "+32.3%",
     weeks: "4 weeks",
     removed: "Surface graining",
+  },
+  {
+    id: "FLX–003",
+    carat: "1.05 ct",
+    colour: "F",
+    cut: "Very Good",
+    shape: "Round Brilliant",
+    before: {
+      grade: "IF",
+      label: "Internally Flawless",
+      comment: "Natural, girdle",
+      value: "AUD $14,500",
+      note: "Natural on girdle — surface characteristic, removable without weight loss.",
+      videoSrc: null,
+      certPdf: null,
+      certLabel: null,
+    },
+    after: {
+      grade: "FL",
+      label: "Flawless",
+      comment: "No clarity characteristics",
+      value: "AUD $18,200",
+      note: "New GIA certificate issued. Weight and proportions unchanged.",
+      videoSrc: null,
+      certPdf: null,
+      certLabel: null,
+    },
+    uplift: "+25.5%",
+    weeks: "5 weeks",
+    removed: "Natural, girdle",
   },
 ];
 
@@ -1145,11 +1177,32 @@ interface SanityStone {
   removed: string;
 }
 
+interface SanityInvestmentPage {
+  seo?: {
+    metaTitle?: string; metaDescription?: string; metaKeywords?: string;
+    ogTitle?: string; ogDescription?: string; ogImageUrl?: string;
+    twitterCard?: string; noIndex?: boolean;
+    structuredDataType?: string; additionalJsonLd?: string;
+  };
+  heroTagline?: string; heroHeading?: string; heroSubtext?: string;
+  heroCta?: string; heroSecondaryCta?: string; heroImageUrl?: string;
+  assetClassTagline?: string; assetClassHeading?: string;
+  assetClassPoints?: { title: string; body: string; tag: string }[];
+  rarityTagline?: string; rarityHeading?: string; rarityBody?: string;
+  conversionTagline?: string; conversionHeading?: string;
+  conversionSteps?: { step: string; label: string; body: string }[];
+  profitSplitHeading?: string; profitSplitBody?: string;
+  ctaHeading?: string; ctaBody?: string;
+}
+
 export default function Investment() {
+  const { data: sanityInvestment } = useSanityQuery<SanityInvestmentPage>(["investment-page"], INVESTMENT_PAGE_QUERY);
   const { data: sanityStones } = useSanityQuery<SanityStone[]>(["conversion-stones"], CONVERSION_STONES_QUERY);
 
-  const stones: Stone[] = isSanityConfigured && sanityStones && sanityStones.length > 0
-    ? (sanityStones.map((s) => ({
+  const seo = sanityInvestment?.seo;
+
+  const stones = isSanityConfigured && sanityStones && sanityStones.length > 0
+    ? sanityStones.map((s) => ({
         id: s.stoneId,
         carat: s.carat,
         colour: s.colour,
@@ -1160,14 +1213,41 @@ export default function Investment() {
         uplift: s.uplift,
         weeks: s.weeks,
         removed: s.removed,
-      })) as unknown as Stone[])
+      }))
     : STONES;
 
   return (
+    <>
+      <SeoHead
+        metaTitle={seo?.metaTitle || "Investment | FLX Diamonds — Natural FL Diamonds as a Portfolio Asset"}
+        metaDescription={seo?.metaDescription || "Natural GIA Flawless diamonds as a portable, stateless hard asset. 50/50 profit split on IF→FL conversion. No upfront cost. Wealth preservation outside the share market."}
+        metaKeywords={seo?.metaKeywords || "diamond investment Australia, FL diamond portfolio, IF FL uplift, natural diamond hard asset, GIA flawless investment"}
+        ogTitle={seo?.ogTitle}
+        ogDescription={seo?.ogDescription}
+        ogImageUrl={seo?.ogImageUrl}
+        twitterCard={seo?.twitterCard}
+        noIndex={seo?.noIndex}
+        structuredDataType={seo?.structuredDataType || "WebPage"}
+        additionalJsonLd={seo?.additionalJsonLd}
+        siteName="FLX Diamonds"
+      />
     <div style={{ fontFamily: "'Inter', sans-serif" }}>
 
       {/* ── Hero ── */}
       <section className="relative overflow-hidden pt-28 md:pt-40 pb-20 md:pb-28 px-8 md:px-14 lg:px-20" style={{ background: "#02274A" }}>
+        {/* Sanity CMS hero image — optional background */}
+        {sanityInvestment?.heroImageUrl && (
+          <>
+            <img
+              src={sanityInvestment.heroImageUrl}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ zIndex: 0 }}
+            />
+            <div className="absolute inset-0" style={{ background: "rgba(2,39,74,0.82)", zIndex: 1 }} />
+          </>
+        )}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -1176,6 +1256,7 @@ export default function Investment() {
               linear-gradient(90deg, rgba(28,169,201,0.03) 1px, transparent 1px)
             `,
             backgroundSize: "80px 80px",
+            zIndex: 2,
           }}
         />
         <motion.div
@@ -1186,27 +1267,20 @@ export default function Investment() {
         >
           <div className="space-y-5 md:space-y-6">
             <motion.p variants={up} className="text-[10px] uppercase tracking-[0.45em] font-medium" style={{ color: "#1CA9C9" }}>
-              Investment Advisory
+              {sanityInvestment?.heroTagline || "Investment Advisory"}
             </motion.p>
             <motion.h1
               variants={up}
               className="font-serif leading-tight"
               style={{ fontSize: "clamp(2.4rem, 6vw, 5rem)", color: "rgba(255,255,255,0.9)" }}
             >
-              Diamonds as a<br />
-              <span style={{ color: "rgba(255,255,255,0.25)" }}>Store of Value.</span>
+              {sanityInvestment?.heroHeading || "Diamonds as a Store of Value."}
             </motion.h1>
             <motion.span variants={up} className="block w-10 h-px" style={{ background: "#1CA9C9" }} />
           </div>
           <motion.div variants={up} className="space-y-4">
             <p className="text-sm sm:text-base leading-relaxed" style={{ color: "rgba(255,255,255,0.42)" }}>
-              FL-grade diamonds at meaningful carat weights have historically functioned as a portable,
-              non-correlated store of value. The IF→FL conversion represents a specific, documentable arbitrage:
-              buy IF, convert to FL, hold or sell at FL pricing.
-            </p>
-            <p className="text-sm sm:text-base leading-relaxed" style={{ color: "rgba(255,255,255,0.42)" }}>
-              We advise a small number of private buyers and family offices on diamond acquisition strategy.
-              Referral or introduction preferred, though direct enquiry is also welcomed.
+              {sanityInvestment?.heroSubtext || "FL-grade diamonds at meaningful carat weights have historically functioned as a portable, non-correlated store of value. The IF→FL conversion represents a specific, documentable arbitrage: buy IF, convert to FL, hold or sell at FL pricing."}
             </p>
           </motion.div>
         </motion.div>
@@ -1278,7 +1352,80 @@ export default function Investment() {
         </div>
       </section>
 
+      {/* ── Why Diamonds ── */}
+      <section className="py-20 md:py-28 px-6" style={{ background: "#02274A" }}>
+        <div className="max-w-7xl mx-auto space-y-12 md:space-y-16">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={stagger}
+            className="max-w-xl space-y-4"
+          >
+            <motion.p variants={up} className="text-[10px] uppercase tracking-[0.45em]" style={{ color: "#1CA9C9" }}>
+              The Asset Case
+            </motion.p>
+            <motion.h2
+              variants={up}
+              className="font-serif leading-tight"
+              style={{ fontSize: "clamp(1.8rem, 4vw, 3rem)", color: "rgba(255,255,255,0.88)" }}
+            >
+              Why FL diamonds<br />
+              <span style={{ color: "rgba(255,255,255,0.3)" }}>hold their value.</span>
+            </motion.h2>
+          </motion.div>
 
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={stagger}
+            className="grid md:grid-cols-3 gap-8"
+          >
+            {PILLARS.map((p) => (
+              <motion.div
+                key={p.title}
+                variants={up}
+                className="p-7 md:p-8 space-y-4 border-t-2"
+                style={{ background: "rgba(255,255,255,0.03)", borderTopColor: "#1CA9C9" }}
+              >
+                <h3 className="font-serif text-xl" style={{ color: "rgba(255,255,255,0.88)" }}>{p.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>{p.body}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── IF→FL Process — GIA Clarity Scale + Horizontal Journey ── */}
+      <section className="py-20 md:py-28 px-6" style={{ background: "white" }}>
+        <div className="max-w-7xl mx-auto mb-12">
+          {/* Key insight stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-wrap gap-8 md:gap-12 pb-12 border-b"
+            style={{ borderColor: "rgba(28,169,201,0.2)" }}
+          >
+            {[
+              { label: "IF vs FL difference", value: "Surface blemish only" },
+              { label: "Material removed", value: "< 0.01mm" },
+              { label: "Qualification rate", value: "~15–20% of IF stones" },
+              { label: "GIA re-certification", value: "Independent · Verifiable" },
+            ].map((stat) => (
+              <div key={stat.label} className="flex flex-col gap-1">
+                <p className="text-[9px] uppercase tracking-widest" style={{ color: "rgba(28,169,201,0.7)" }}>{stat.label}</p>
+                <p className="font-serif text-base" style={{ color: "#02274A" }}>{stat.value}</p>
+              </div>
+            ))}
+          </motion.div>
+          <div className="mt-12">
+            <GIAClarityScale />
+          </div>
+        </div>
+      </section>
 
       {/* ── IF→FL Horizontal Scroll Journey — Full Width, Pinned ── */}
       <IFtoFLHorizontalScroll />
@@ -1352,79 +1499,6 @@ export default function Investment() {
           </motion.p>
         </div>
       </section>
-            {/* ── IF→FL Process — GIA Clarity Scale + Horizontal Journey ── */}
-      <section className="py-20 md:py-28 px-6" style={{ background: "white" }}>
-        <div className="max-w-7xl mx-auto mb-12">
-          {/* Key insight stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-wrap gap-8 md:gap-12 pb-12 border-b"
-            style={{ borderColor: "rgba(28,169,201,0.2)" }}
-          >
-            {[
-              { label: "IF vs FL difference", value: "Surface blemish only" },
-              { label: "Material removed", value: "< 0.01mm" },
-              { label: "Qualification rate", value: "~15–20% of IF stones" },
-              { label: "GIA re-certification", value: "Independent · Verifiable" },
-            ].map((stat) => (
-              <div key={stat.label} className="flex flex-col gap-1">
-                <p className="text-[9px] uppercase tracking-widest" style={{ color: "rgba(28,169,201,0.7)" }}>{stat.label}</p>
-                <p className="font-serif text-base" style={{ color: "#02274A" }}>{stat.value}</p>
-              </div>
-            ))}
-          </motion.div>
-          <div className="mt-12">
-            <GIAClarityScale />
-          </div>
-        </div>
-      </section>
-            {/* ── Why Diamonds ── */}
-      <section className="py-20 md:py-28 px-6" style={{ background: "#02274A" }}>
-        <div className="max-w-7xl mx-auto space-y-12 md:space-y-16">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={stagger}
-            className="max-w-xl space-y-4"
-          >
-            <motion.p variants={up} className="text-[10px] uppercase tracking-[0.45em]" style={{ color: "#1CA9C9" }}>
-              The Asset Case
-            </motion.p>
-            <motion.h2
-              variants={up}
-              className="font-serif leading-tight"
-              style={{ fontSize: "clamp(1.8rem, 4vw, 3rem)", color: "rgba(255,255,255,0.88)" }}
-            >
-              Why FL diamonds<br />
-              <span style={{ color: "rgba(255,255,255,0.3)" }}>hold their value.</span>
-            </motion.h2>
-          </motion.div>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={stagger}
-            className="grid md:grid-cols-3 gap-8"
-          >
-            {PILLARS.map((p) => (
-              <motion.div
-                key={p.title}
-                variants={up}
-                className="p-7 md:p-8 space-y-4 border-t-2"
-                style={{ background: "rgba(255,255,255,0.03)", borderTopColor: "#1CA9C9" }}
-              >
-                <h3 className="font-serif text-xl" style={{ color: "rgba(255,255,255,0.88)" }}>{p.title}</h3>
-                <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>{p.body}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
 
       {/* ── CTA ── */}
       <section className="py-20 md:py-28 px-6" style={{ background: "white" }}>
@@ -1475,5 +1549,6 @@ export default function Investment() {
       </section>
 
     </div>
+    </>
   );
 }

@@ -95,8 +95,8 @@ export default function Terms() {
             <p>
               FLX Diamonds Pty Ltd<br />
               Geelong, Victoria, Australia<br />
-              <a href="mailto:info@flxdiamond.com" style={{ color: "#1CA9C9" }}>
-                info@flxdiamond.com
+              <a href="mailto:help@flxdiamond.com" style={{ color: "#1CA9C9" }}>
+                help@flxdiamond.com
               </a>
             </p>
           </section>

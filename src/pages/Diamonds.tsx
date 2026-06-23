@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef } from "react";
   import { motion, AnimatePresence } from "framer-motion";
+  import emailjs from "@emailjs/browser";
   import { useSanityQuery } from "@/lib/useSanityData";
   import { isSanityConfigured } from "@/lib/sanity";
   import { DIAMONDS_QUERY } from "@/lib/sanity-queries";
@@ -7,7 +8,22 @@ import { useState, useMemo, useRef } from "react";
   import { Button } from "@/components/ui/button";
   import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
   import { useShortlist } from "@/contexts/ShortlistContext";
-  import type { Diamond } from "@/lib/diamond_types";
+  import { useAuth } from "@/contexts/AuthContext";
+  import type { Diamond } from "@/lib/diamond-types";
+
+  /* ── EmailJS config ─────────────────────────────────────── */
+  const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || "";
+  const EMAILJS_OWNER_TMPL = import.meta.env.VITE_EMAILJS_OWNER_TMPL || "";
+  const EMAILJS_BUYER_TMPL = import.meta.env.VITE_EMAILJS_BUYER_TMPL || "";
+  const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY  || "";
+  const emailjsConfigured  = !!(EMAILJS_SERVICE_ID && EMAILJS_OWNER_TMPL && EMAILJS_BUYER_TMPL && EMAILJS_PUBLIC_KEY);
+
+  function formatStonesList(stones: Diamond[]): string {
+    return stones.map((d, i) =>
+      `${i + 1}. ${d.stockId} — ${d.carat.toFixed(2)}ct ${d.shape} | ${d.color}/${d.clarity}/${d.cut} | ${d.certification}`
+    ).join("\n");
+  }
+
   type Category = "natural" | "lab" | "loose" | "custom";
   type Certification = "GIA" | "IGI" | "None";
   
@@ -859,6 +875,270 @@ import { useState, useMemo, useRef } from "react";
     );
   }
 
+  /* ── Enquiry Modal (inline on diamonds page) ─────────────── */
+  function EnquiryModal({ onClose }: { onClose: () => void }) {
+    const { shortlist, clearShortlist, count } = useShortlist();
+    const { user, isAuthenticated, login } = useAuth();
+
+    const [loginForm, setLoginForm] = useState({ name: "", email: "", company: "", phone: "" });
+    const [loginError, setLoginError] = useState("");
+
+    const [message, setMessage] = useState("");
+    const [submitting, setSubmitting] = useState(false);
+    const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+    const [errorMsg, setErrorMsg] = useState("");
+
+    const handleLogin = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!loginForm.name.trim() || !loginForm.email.trim() || !loginForm.company.trim()) {
+        setLoginError("Please provide your name, email, and company.");
+        return;
+      }
+      setLoginError("");
+      login(loginForm);
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!user) return;
+      setSubmitting(true);
+      setErrorMsg("");
+
+      const stonesList = formatStonesList(shortlist);
+      const now = new Date().toLocaleString("en-AU", {
+        timeZone: "Australia/Melbourne",
+        dateStyle: "full",
+        timeStyle: "short",
+      });
+
+      const ownerParams = {
+        buyer_name:    user.name,
+        buyer_email:   user.email,
+        buyer_company: user.company,
+        buyer_phone:   user.phone || "—",
+        stones_list:   stonesList,
+        total_stones:  String(count),
+        message:       message.trim() || "No additional notes.",
+        submitted_at:  now,
+      };
+
+      const buyerParams = {
+        buyer_name:   user.name,
+        buyer_email:  user.email,
+        stones_list:  stonesList,
+        total_stones: String(count),
+        submitted_at: now,
+      };
+
+      try {
+        if (emailjsConfigured) {
+          await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_OWNER_TMPL, ownerParams, EMAILJS_PUBLIC_KEY);
+          await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_BUYER_TMPL, { ...buyerParams, to_email: user.email }, EMAILJS_PUBLIC_KEY);
+        } else {
+          await new Promise(r => setTimeout(r, 1100));
+          console.info("[FLX] EmailJS not configured — enquiry data:", ownerParams);
+        }
+        clearShortlist();
+        setStatus("success");
+      } catch (err) {
+        console.error(err);
+        setErrorMsg("There was a problem sending your enquiry. Please try again or contact us directly.");
+        setStatus("error");
+      } finally {
+        setSubmitting(false);
+      }
+    };
+
+    const inputStyle: React.CSSProperties = {
+      width: "100%", height: "40px",
+      background: "rgba(255,255,255,0.04)",
+      border: "1px solid rgba(255,255,255,0.12)",
+      color: "white", fontSize: "12px", padding: "0 12px", outline: "none",
+      transition: "border-color 0.2s",
+    };
+
+    return (
+      <Dialog open onOpenChange={open => { if (!open) onClose(); }}>
+        <DialogContent style={{ background: "#011A35", border: "1px solid rgba(28,169,201,0.2)", color: "white", maxWidth: "680px", padding: 0, overflow: "hidden", borderRadius: 0 }}>
+
+          {/* Header */}
+          <DialogHeader style={{ padding: "24px 30px 18px", borderBottom: "1px solid rgba(28,169,201,0.12)" }}>
+            <DialogTitle className="font-serif" style={{ fontSize: "1.45rem", color: "white", lineHeight: 1.2 }}>
+              {status === "success" ? "Enquiry Received"
+                : isAuthenticated ? "Submit Trade Enquiry"
+                : "Register Your Trade Details"}
+            </DialogTitle>
+            <DialogDescription style={{ fontSize: "11px", color: "rgba(255,255,255,0.4)", letterSpacing: "0.1em", marginTop: "3px" }}>
+              {status === "success"
+                ? `Thank you, ${user?.name.split(" ")[0]}. We'll respond within one business day.`
+                : isAuthenticated
+                  ? `${count} ${count === 1 ? "stone" : "stones"} selected · Enquiry sent to our trade desk`
+                  : "One-time setup — stored locally on your device only"}
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* ── Success state ── */}
+          {status === "success" ? (
+            <div style={{ padding: "32px 30px" }} className="flex flex-col items-center gap-5 text-center">
+              <div className="w-14 h-14 flex items-center justify-center"
+                style={{ border: "1px solid rgba(28,169,201,0.35)", background: "rgba(28,169,201,0.08)" }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 12L10 17L19 7" stroke="#1CA9C9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-serif text-xl text-white mb-2">We've received your selection.</p>
+                <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
+                  A confirmation has been sent to{" "}
+                  <strong style={{ color: "rgba(255,255,255,0.7)" }}>{user?.email}</strong>.
+                  Our team will review your stones and respond with an itemised trade quote.
+                </p>
+              </div>
+              {!emailjsConfigured && (
+                <div style={{ width: "100%", padding: "10px 16px", background: "rgba(255,180,0,0.06)", border: "1px solid rgba(255,180,0,0.2)" }}>
+                  <p style={{ fontSize: "9px", textTransform: "uppercase", letterSpacing: "0.28em", color: "rgba(255,180,100,0.8)" }}>
+                    Dev mode — EmailJS not configured. Enquiry logged to console.
+                  </p>
+                </div>
+              )}
+              <button
+                onClick={onClose}
+                style={{ height: "44px", padding: "0 36px", background: "#1CA9C9", border: "none", color: "white", fontSize: "9px", letterSpacing: "0.32em", textTransform: "uppercase", cursor: "pointer" }}
+              >
+                Continue Browsing
+              </button>
+            </div>
+
+          /* ── Login / register step ── */
+          ) : !isAuthenticated ? (
+            <form onSubmit={handleLogin} style={{ padding: "24px 30px 28px" }}>
+              <p style={{ fontSize: "9px", textTransform: "uppercase", letterSpacing: "0.35em", color: "rgba(255,255,255,0.28)", marginBottom: "18px" }}>
+                Your details · Stored locally · Never shared
+              </p>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "16px" }}>
+                {[
+                  { key: "name",    label: "Full Name *",          placeholder: "Jane Smith",                type: "text" },
+                  { key: "email",   label: "Email Address *",       placeholder: "jane@yourfirm.com.au",      type: "email" },
+                  { key: "company", label: "Company / Trade Name *", placeholder: "Smith Jewellers Pty Ltd",  type: "text" },
+                  { key: "phone",   label: "Phone (optional)",       placeholder: "+61 4xx xxx xxx",           type: "tel" },
+                ].map(f => (
+                  <div key={f.key}>
+                    <label style={{ fontSize: "7px", textTransform: "uppercase", letterSpacing: "0.4em", color: "rgba(255,255,255,0.3)", display: "block", marginBottom: "6px" }}>
+                      {f.label}
+                    </label>
+                    <input
+                      type={f.type}
+                      placeholder={f.placeholder}
+                      value={loginForm[f.key as keyof typeof loginForm]}
+                      onChange={e => setLoginForm(prev => ({ ...prev, [f.key]: e.target.value }))}
+                      style={inputStyle}
+                      onFocus={e => { e.currentTarget.style.borderColor = "rgba(28,169,201,0.5)"; }}
+                      onBlur={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"; }}
+                    />
+                  </div>
+                ))}
+              </div>
+              {loginError && (
+                <p style={{ fontSize: "11px", color: "rgba(255,140,140,0.85)", marginBottom: "12px" }}>{loginError}</p>
+              )}
+              <button
+                type="submit"
+                style={{ width: "100%", height: "46px", background: "#1CA9C9", border: "none", color: "white", fontSize: "9px", letterSpacing: "0.35em", textTransform: "uppercase", cursor: "pointer" }}
+              >
+                Continue to Enquiry →
+              </button>
+            </form>
+
+          /* ── Enquiry step ── */
+          ) : (
+            <form onSubmit={handleSubmit} style={{ padding: "22px 30px 26px" }}>
+              {/* Shortlisted stones */}
+              <div style={{ marginBottom: "18px", border: "1px solid rgba(28,169,201,0.1)", background: "#02193A" }}>
+                <div style={{ padding: "9px 14px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "9px", textTransform: "uppercase", letterSpacing: "0.35em", color: "rgba(255,255,255,0.4)" }}>
+                    {count} {count === 1 ? "Stone" : "Stones"} Shortlisted
+                  </span>
+                  <span style={{ fontSize: "9px", letterSpacing: "0.18em", color: "rgba(28,169,201,0.6)" }}>
+                    {user!.name} · {user!.company}
+                  </span>
+                </div>
+                <div style={{ maxHeight: "190px", overflowY: "auto" }}>
+                  {shortlist.map((d, i) => (
+                    <div
+                      key={d.stockId}
+                      style={{
+                        padding: "9px 14px",
+                        borderBottom: i < shortlist.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
+                        display: "flex", justifyContent: "space-between", alignItems: "center",
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
+                        <span className="font-serif" style={{ fontSize: "13px", color: "white" }}>{d.shape}</span>
+                        <span style={{ fontSize: "11px", fontWeight: 700, color: "#1CA9C9" }}>{d.carat.toFixed(2)} ct</span>
+                        <span style={{ fontSize: "8px", fontFamily: "monospace", color: "rgba(255,255,255,0.3)" }}>{d.stockId}</span>
+                      </div>
+                      <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.4)" }}>
+                        {d.color}/{d.clarity} · {d.certification !== "None" ? d.certification : "Uncert."}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Notes */}
+              <div style={{ marginBottom: "16px" }}>
+                <label style={{ fontSize: "7px", textTransform: "uppercase", letterSpacing: "0.4em", color: "rgba(255,255,255,0.3)", display: "block", marginBottom: "8px" }}>
+                  Additional Notes (optional)
+                </label>
+                <textarea
+                  value={message}
+                  onChange={e => setMessage(e.target.value)}
+                  rows={3}
+                  placeholder="Any specific requirements, timing, or questions about these stones..."
+                  style={{ width: "100%", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.1)", color: "white", fontSize: "12px", padding: "10px 12px", resize: "none", outline: "none", fontFamily: "inherit", transition: "border-color 0.2s" }}
+                  onFocus={e => { e.currentTarget.style.borderColor = "rgba(28,169,201,0.4)"; }}
+                  onBlur={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
+                />
+              </div>
+
+              {/* Confidentiality note */}
+              <div style={{ padding: "9px 14px", background: "rgba(28,169,201,0.04)", border: "1px solid rgba(28,169,201,0.1)", marginBottom: "14px" }}>
+                <p style={{ fontSize: "10px", color: "rgba(255,255,255,0.38)", lineHeight: 1.6 }}>
+                  All enquiries are strictly confidential. Handled personally by our trade desk — never automated or shared.
+                </p>
+              </div>
+
+              {status === "error" && (
+                <p style={{ fontSize: "11px", color: "rgba(255,140,140,0.85)", marginBottom: "12px" }}>{errorMsg}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={submitting}
+                style={{
+                  width: "100%", height: "46px",
+                  background: submitting ? "rgba(28,169,201,0.55)" : "#1CA9C9",
+                  border: "none", color: "white",
+                  fontSize: "9px", letterSpacing: "0.35em", textTransform: "uppercase",
+                  cursor: submitting ? "wait" : "pointer",
+                  transition: "background 0.2s",
+                }}
+              >
+                {submitting ? "Sending Enquiry…" : "Submit Enquiry"}
+              </button>
+
+              {!emailjsConfigured && (
+                <p style={{ fontSize: "9px", textAlign: "center", color: "rgba(255,255,255,0.2)", marginTop: "10px" }}>
+                  EmailJS not configured — enquiry will log to console in dev mode.
+                </p>
+              )}
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   /* ── Sort options ────────────────────────────────────────── */
   type SortKey = "default" | "carat-asc" | "carat-desc" | "clarity" | "color";
   
@@ -925,9 +1205,10 @@ import { useState, useMemo, useRef } from "react";
     const [caratMin,    setCaratMin]    = useState(0);
     const [caratMax,    setCaratMax]    = useState(999);
     const [sortKey,     setSortKey]     = useState<SortKey>("default");
-    const [gridCols, setGridCols] = useState<3 | 4>(3);
+    const [gridCols, setGridCols] = useState<2 | 3>(3);
     const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
     const [quickViewDiamond, setQuickViewDiamond] = useState<Diamond | null>(null);
+    const [showEnquiryModal, setShowEnquiryModal] = useState(false);
     const { isInShortlist, addToShortlist, removeFromShortlist, count: shortlistCount } = useShortlist();
     const [, navigate] = useLocation();
     const [fluorFilter, setFluorFilter] = useState("All");
@@ -970,9 +1251,9 @@ import { useState, useMemo, useRef } from "react";
       setFluorFilter("All"); setCertFilter("All");
     };
   
-    const gridClass = gridCols === 4
-      ? "grid-cols-2 sm:grid-cols-2 lg:grid-cols-4"
-      : "grid-cols-2 sm:grid-cols-2 lg:grid-cols-3";
+    const gridClass = gridCols === 2
+      ? "grid-cols-1 sm:grid-cols-2"
+      : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
   
     return (
       <div style={{ background: "#02274A", minHeight: "100vh" }}>
@@ -1358,16 +1639,12 @@ import { useState, useMemo, useRef } from "react";
                       </select>
                     </div>
                     <div className="flex gap-1">
-                      {([3,4] as const).map(n => (
+                      {([2,3] as const).map(n => (
                         <button key={n} onClick={() => { setGridCols(n); setViewMode("grid"); }}
-                         className="w-8 h-8 transition-all text-[9px] font-mono"
-                         style={{
-                          border: `1px solid ${viewMode === "grid" && gridCols === n ? "#1CA9C9" : "rgba(255,255,255,0.12)"}`,
-                          color: viewMode === "grid" && gridCols === n ? "#1CA9C9" : "rgba(255,255,255,0.3)",
-                          background: viewMode === "grid" && gridCols === n ? "rgba(28,169,201,0.08)" : "transparent",
-                        }}
+                          className="w-8 h-8 transition-all text-[9px] font-mono"
+                          style={{ border: `1px solid ${viewMode === "grid" && gridCols === n ? "#1CA9C9" : "rgba(255,255,255,0.12)"}`, color: viewMode === "grid" && gridCols === n ? "#1CA9C9" : "rgba(255,255,255,0.3)", background: viewMode === "grid" && gridCols === n ? "rgba(28,169,201,0.08)" : "transparent" }}
                         >{n}×</button>
-                        ))}
+                      ))}
                       <button
                         onClick={() => setViewMode("list")}
                         className="w-8 h-8 transition-all flex items-center justify-center"
@@ -1528,16 +1805,18 @@ import { useState, useMemo, useRef } from "react";
                     </div>
                     {/* Grid / List toggle */}
                     <div className="flex gap-1">
-                        {([3,4] as const).map(n => (
-                          <button key={n} onClick={() => { setGridCols(n); setViewMode("grid"); }}
+                      {([2,3] as const).map(n => (
+                        <button
+                          key={n}
+                          onClick={() => { setGridCols(n); setViewMode("grid"); }}
                           className="w-8 h-8 transition-all text-[9px] font-mono"
                           style={{
                             border: `1px solid ${viewMode === "grid" && gridCols === n ? "#1CA9C9" : "rgba(255,255,255,0.12)"}`,
                             color: viewMode === "grid" && gridCols === n ? "#1CA9C9" : "rgba(255,255,255,0.3)",
                             background: viewMode === "grid" && gridCols === n ? "rgba(28,169,201,0.08)" : "transparent",
                           }}
-                          >{n}×</button>
-                          ))}
+                        >{n}×</button>
+                      ))}
                       <button
                         onClick={() => setViewMode("list")}
                         className="w-8 h-8 transition-all flex items-center justify-center"
@@ -1612,6 +1891,11 @@ import { useState, useMemo, useRef } from "react";
           onClose={() => setQuickViewDiamond(null)}
         />
 
+        {/* ── Enquiry modal ── */}
+        {showEnquiryModal && (
+          <EnquiryModal onClose={() => setShowEnquiryModal(false)} />
+        )}
+
         {/* ── Floating shortlist bar ── */}
         <AnimatePresence>
           {shortlistCount > 0 && (
@@ -1641,15 +1925,26 @@ import { useState, useMemo, useRef } from "react";
                 </span>
               </div>
               <div className="w-px h-5" style={{ background: "rgba(255,255,255,0.12)" }} />
+              {/* Subtle "Edit" link */}
               <button
                 onClick={() => navigate("/shortlist")}
-                className="text-[10px] uppercase tracking-[0.35em] font-semibold text-white transition-all px-4 py-1.5"
-                style={{ background: "#1CA9C9" }}
+                className="text-[9px] uppercase tracking-[0.28em] transition-colors"
+                style={{ background: "none", border: "none", color: "rgba(255,255,255,0.38)", cursor: "pointer", padding: "0" }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.65)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.38)"; }}
+              >
+                Edit
+              </button>
+              {/* Primary enquiry CTA */}
+              <button
+                onClick={() => setShowEnquiryModal(true)}
+                className="text-[10px] uppercase tracking-[0.35em] font-semibold text-white px-5 py-2 transition-opacity"
+                style={{ background: "#1CA9C9", border: "none", cursor: "pointer" }}
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity = "0.85"; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = "1"; }}
-                data-testid="btn-view-shortlist"
+                data-testid="btn-submit-enquiry"
               >
-                View Shortlist
+                Submit Enquiry
               </button>
             </motion.div>
           )}

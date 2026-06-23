@@ -118,7 +118,7 @@ function SetupGuide() {
               title: "Add environment variables",
               body: (
                 <>
-                  In this project, add these secrets:
+                  In this Replit project, add these secrets:
                   <br />
                   <code
                     style={{
@@ -140,8 +140,8 @@ function SetupGuide() {
             },
             {
               step: "5",
-              title: "Add your URL to Sanity CORS",
-              body: "In the Sanity dashboard → API → CORS Origins, add your preview URL.",
+              title: "Add your Replit URL to Sanity CORS",
+              body: "In the Sanity dashboard → API → CORS Origins, add your Replit preview URL.",
             },
             {
               step: "6",

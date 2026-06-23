@@ -4,6 +4,7 @@ import { Link } from "wouter";
 import { useSanityQuery } from "@/lib/useSanityData";
 import { isSanityConfigured } from "@/lib/sanity";
 import { SERVICES_QUERY } from "@/lib/sanity-queries";
+import SeoHead from "@/components/SeoHead";
 
 const fade = {
   hidden: { opacity: 0, y: 28 },
@@ -336,6 +337,14 @@ export default function Services() {
     : SERVICES;
 
   return (
+    <>
+      <SeoHead
+        metaTitle="Services | FLX Diamonds — Natural, Lab-Grown, Customising & IF→FL Conversion"
+        metaDescription="Four specialist diamond services: natural sourcing, lab-grown supply, bespoke customisation, and the house-signature IF→FL conversion. Trade-only. GIA-certified."
+        metaKeywords="diamond services, IF to FL conversion, natural diamonds Australia, lab grown diamonds trade, GIA certified"
+        structuredDataType="Service"
+        siteName="FLX Diamonds"
+      />
     <div style={{ fontFamily: "'Inter', sans-serif" }}>
 
       {/* ══ HERO ══ */}
@@ -512,5 +521,6 @@ export default function Services() {
       </section>
 
     </div>
+    </>
   );
 }

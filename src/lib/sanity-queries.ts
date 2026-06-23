@@ -1,191 +1,226 @@
-// sanity-queries.ts
-// ─────────────────────────────────────────────────────────────────────────────
-// Preserves all existing queries. Updated queries add image/video fields and
-// the homepage sections that were previously 100% hardcoded.
-// ─────────────────────────────────────────────────────────────────────────────
+/* ─────────────────────────────────────────
+   Shared SEO projection
+   ───────────────────────────────────────── */
+const SEO_PROJECTION = `
+  seo {
+    metaTitle,
+    metaDescription,
+    metaKeywords,
+    ogTitle,
+    ogDescription,
+    "ogImageUrl": ogImage.asset->url,
+    twitterCard,
+    twitterTitle,
+    twitterDescription,
+    "twitterImageUrl": twitterImage.asset->url,
+    canonicalUrl,
+    noIndex,
+    structuredDataType,
+    additionalJsonLd
+  }
+`;
 
+/* ─────────────────────────────────────────
+   Site Settings
+   ───────────────────────────────────────── */
 export const SITE_SETTINGS_QUERY = `*[_type == "siteSettings"][0]{
   siteName,
   tagline,
+  "logoUrl": logo.asset->url,
+  logoAlt,
+  globalSeo {
+    defaultTitle,
+    titleSeparator,
+    defaultDescription,
+    "defaultOgImageUrl": defaultOgImage.asset->url,
+    twitterHandle,
+    googleSiteVerification,
+    bingVerification
+  },
+  organizationSchema {
+    legalName,
+    abn,
+    foundingYear,
+    logoUrl,
+    sameAs
+  },
+  contact {
+    email,
+    phoneAU,
+    phoneIN,
+    address,
+    googleMapsUrl
+  },
+  social {
+    instagram,
+    linkedin,
+    facebook,
+    twitter,
+    youtube
+  },
+  footerTagline,
+  footerNote,
+  /* legacy */
   seoDescription,
-  ogImage,
   email,
   phones,
   address,
   googleMapsUrl
 }`;
 
-// ─── HOME PAGE ────────────────────────────────────────────────────────────────
+/* ─────────────────────────────────────────
+   Home Page
+   ───────────────────────────────────────── */
 export const HOME_PAGE_QUERY = `*[_type == "homePage"][0]{
-  seo,
+  ${SEO_PROJECTION},
   heroOverline,
   heroHeading,
   heroSubtext,
   heroCta,
-  heroCtaLink,
   heroSecondaryCta,
-  heroSecondaryCtaLink,
   "heroVideoUrl": heroVideo.asset->url,
-  heroFallbackImage{ "url": asset->url, alt },
-  trustStripItems[]{ text, showGiaLogo },
   marqueeItems,
-  clientLogos[]{ name, sub, logo{ "url": asset->url, alt } },
-  qualifierOverline,
+  qualifierTagline,
   qualifierHeading,
   qualifierSubtext,
-  qualifierCards[]{
-    id, num, headline, subtext,
-    answer{ title, points, cta, href }
-  },
-  fourCsOverline,
-  fourCsHeading,
-  fourCsVideoUrl,
-  fourCsVideoCaption,
-  fourCsItems[]{ title, body },
-  iftflOverline,
-  iftflHeading,
-  iftflBody,
-  iftflSteps[]{ n, label, body, tag },
-  iftflCalloutHeading,
-  iftflCalloutBody,
-  iftflFootnote,
-  servicesOverline,
-  servicesHeading,
-  serviceCards[]{ num, title, body, tags, link, linkText },
-  processOverline,
-  processHeading,
-  processBody,
-  processVideoUrl,
-  processVideoCaption,
-  processStats[]{ label, sub },
-  featuredDiamondsSectionHeading,
-  featuredDiamondsSectionTagline,
-  featuredDiamondsSubtext,
-  featuredInventoryOverline,
-  featuredInventoryHeading,
-  featuredInventoryFootnote,
-  whyOverline,
-  whyHeading,
-  whyCards[]{ title, body, tag },
-  tradeOverline,
-  tradeHeading,
-  tradePanels[]{ heading, body, ctaLabel, ctaLink, ctaVariant },
-  investmentOverline,
+  manufacturingTagline,
+  manufacturingHeading,
+  manufacturingBody,
+  manufacturingCta,
+  "manufacturingVideoUrl": manufacturingVideo.asset->url,
+  "manufacturingImageUrl": manufacturingImage.asset->url,
+  profitSplitHeading,
+  profitSplitBody,
+  tradePortalTagline,
+  tradePortalHeading,
+  tradePortalJewellersHeading,
+  tradePortalJewellersBody,
+  tradePortalHowHeading,
+  tradePortalHowBody,
+  investmentTagline,
   investmentHeading,
   investmentBody,
-  investmentCtaLabel,
+  investmentCta,
   investmentPoints,
-  testimonialsOverline,
-  testimonialsHeading,
-  testimonials[]{ quote, role, location },
-  testimonialsFootnote,
   noPitchHeading,
   noPitchBody,
-  noPitchCtaButtons[]{ label, link, variant },
-  faqOverline,
-  faqHeading,
-  faqCtaLabel,
-  faqs[]{ q, a },
+  featuredInventoryTagline,
+  featuredInventoryHeading,
+  featuredInventoryNote,
+  whyTagline,
+  whyHeading,
+  testimonialsTagline,
+  testimonialsHeading,
+  testimonials,
+  closingTagline,
+  closingQuote,
+  closingCta,
+  "closingImageUrl": closingImage.asset->url,
+  faqs,
   ctaSectionHeading,
   ctaSectionBody,
-  closingImage{ "url": asset->url, alt },
-  closingOverline,
-  closingQuote,
-  closingCtaLabel,
-  closingCtaLink,
+  /* legacy */
+  heroSubtext,
+  featuredDiamondsSectionHeading,
+  featuredDiamondsSectionTagline,
+  featuredDiamondsSubtext
 }`;
 
-// ─── ABOUT PAGE ───────────────────────────────────────────────────────────────
+/* ─────────────────────────────────────────
+   About Page
+   ───────────────────────────────────────── */
 export const ABOUT_PAGE_QUERY = `*[_type == "aboutPage"][0]{
-  seo,
+  ${SEO_PROJECTION},
   heroTagline,
   heroHeading,
   heroSubtext,
-  heroImage{ "url": asset->url, alt },
-  craftsman{
-    name,
-    tagline,
-    bio,
-    "imageUrl": image.asset->url,
-    stats[]{ value, label }
+  "craftsman": craftsman {
+    name, beganCutting, yearsMastery, primaryCraft, basedIn, biography,
+    "photoUrl": photo.asset->url
   },
   techniqueTagline,
   techniqueHeading,
   techniqueIntro,
-  techniqueSteps[]{ n, label, body, tag },
-  techniqueVideoUrl,
-  techniqueImage{ "url": asset->url, alt },
-  partnerships[]{ name, location, "logoUrl": logo.asset->url },
-  pillars[]{ title, body, icon },
-  galleryImages[]{ "url": asset->url, alt },
+  techniqueSteps,
+  partnerships,
+  pillars,
   ctaHeading,
-  ctaBody,
-  ctaLabel,
-  ctaLink,
+  ctaBody
 }`;
 
-// ─── INVESTMENT PAGE ──────────────────────────────────────────────────────────
+/* ─────────────────────────────────────────
+   Investment Page
+   ───────────────────────────────────────── */
 export const INVESTMENT_PAGE_QUERY = `*[_type == "investmentPage"][0]{
-  seo,
+  ${SEO_PROJECTION},
   heroTagline,
   heroHeading,
   heroSubtext,
-  heroImage{ "url": asset->url, alt },
-  pillars[]{ title, body, tag },
-  processTagline,
-  processHeading,
-  processIntro,
-  processSteps[]{ n, label, body, tag },
-  processVideoUrl,
-  splitHeading,
-  splitBody,
-  casestudiesTagline,
-  casestudiesHeading,
-  casestudiesSubtext,
+  heroCta,
+  heroSecondaryCta,
+  "heroImageUrl": heroImage.asset->url,
+  assetClassTagline,
+  assetClassHeading,
+  assetClassPoints,
+  rarityTagline,
+  rarityHeading,
+  rarityBody,
+  conversionTagline,
+  conversionHeading,
+  conversionSteps,
+  profitSplitHeading,
+  profitSplitBody,
   ctaHeading,
-  ctaBody,
-  ctaLabel,
-  ctaLink,
+  ctaBody
 }`;
 
-// ─── TRADE PAGE ───────────────────────────────────────────────────────────────
+/* ─────────────────────────────────────────
+   Trade Page
+   ───────────────────────────────────────── */
 export const TRADE_PAGE_QUERY = `*[_type == "tradePage"][0]{
-  seo,
+  ${SEO_PROJECTION},
   heroTagline,
   heroHeading,
   heroSubtext,
-  heroImage{ "url": asset->url, alt },
-  whoQualifies[]{ title, body, points },
-  whatWeOffer[]{ num, title, body, tags },
-  processTagline,
-  processHeading,
-  processSteps[]{ n, label, body },
-  partnerLogos[]{ name, sub, "logoUrl": logo.asset->url },
-  formHeading,
-  formSubtext,
-  enquiryTypes,
+  heroCta,
+  heroSecondaryCta,
+  "heroVideoUrl": heroVideo.asset->url,
+  "heroImageUrl": heroImage.asset->url,
+  partnerTypesTagline,
+  partnerTypesHeading,
+  partnerTypes,
+  accessTagline,
+  accessHeading,
+  accessFeatures,
+  jewellersHeading,
+  jewellersBody,
+  ctaHeading,
+  ctaBody
 }`;
 
-// ─── CONTACT PAGE ─────────────────────────────────────────────────────────────
+/* ─────────────────────────────────────────
+   Contact Page
+   ───────────────────────────────────────── */
 export const CONTACT_PAGE_QUERY = `*[_type == "contactPage"][0]{
-  seo,
+  ${SEO_PROJECTION},
   heroTagline,
   heroHeading,
   heroSubtext,
-  email,
-  phone,
-  address,
-  stats[]{ value, label },
-  enquiryTypes,
+  formTagline,
   formHeading,
-  formSubtext,
-  formConfirmationHeading,
-  formConfirmationBody,
-  formSuccessMessage,
-  sidebarBlocks[]{ heading, body },
+  responsePromise,
+  directContactTagline,
+  directContactHeading,
+  email,
+  phones,
+  address,
+  abn,
+  privacyNote
 }`;
 
-// ─── DIAMONDS (unchanged) ─────────────────────────────────────────────────────
+/* ─────────────────────────────────────────
+   Diamonds
+   ───────────────────────────────────────── */
 export const DIAMONDS_QUERY = `*[_type == "diamond" && available != false] | order(carat desc){
   _id,
   stockId,
@@ -202,6 +237,10 @@ export const DIAMONDS_QUERY = `*[_type == "diamond" && available != false] | ord
   certification,
   certificateNumber,
   "imageUrl": image.asset->url,
+  "images": images[].asset->url,
+  "videoUrl": video.asset->url,
+  giaReportUrl,
+  "giaReportPdfUrl": giaReportPdf.asset->url,
   featured
 }`;
 
@@ -214,11 +253,17 @@ export const FEATURED_DIAMONDS_QUERY = `*[_type == "diamond" && featured == true
   color,
   clarity,
   cut,
+  polish,
+  symmetry,
+  fluorescence,
+  measurements,
   "imageUrl": image.asset->url,
   certification
 }`;
 
-// ─── JOURNAL ──────────────────────────────────────────────────────────────────
+/* ─────────────────────────────────────────
+   Journal
+   ───────────────────────────────────────── */
 export const JOURNAL_ARTICLES_QUERY = `*[_type == "journalArticle"] | order(publishedAt desc){
   _id,
   title,
@@ -226,7 +271,7 @@ export const JOURNAL_ARTICLES_QUERY = `*[_type == "journalArticle"] | order(publ
   publishedAt,
   category,
   excerpt,
-  coverImage{ "url": asset->url, alt },
+  "coverImageUrl": coverImage.asset->url,
   featured
 }`;
 
@@ -237,7 +282,7 @@ export const FEATURED_ARTICLE_QUERY = `*[_type == "journalArticle" && featured =
   publishedAt,
   category,
   excerpt,
-  coverImage{ "url": asset->url, alt },
+  "coverImageUrl": coverImage.asset->url,
   body
 }`;
 
@@ -249,11 +294,13 @@ export const ARTICLE_BY_SLUG_QUERY = `*[_type == "journalArticle" && slug.curren
   category,
   excerpt,
   body,
-  coverImage{ "url": asset->url, alt },
-  seo
+  "coverImageUrl": coverImage.asset->url,
+  ${SEO_PROJECTION}
 }`;
 
-// ─── FAQ CATEGORIES (unchanged) ───────────────────────────────────────────────
+/* ─────────────────────────────────────────
+   FAQ Categories
+   ───────────────────────────────────────── */
 export const FAQ_CATEGORIES_QUERY = `*[_type == "faqCategory"] | order(order asc){
   _id,
   label,
@@ -262,7 +309,9 @@ export const FAQ_CATEGORIES_QUERY = `*[_type == "faqCategory"] | order(order asc
   faqs
 }`;
 
-// ─── SERVICES (added imageUrl) ────────────────────────────────────────────────
+/* ─────────────────────────────────────────
+   Services
+   ───────────────────────────────────────── */
 export const SERVICES_QUERY = `*[_type == "service"] | order(order asc){
   _id,
   number,
@@ -274,20 +323,23 @@ export const SERVICES_QUERY = `*[_type == "service"] | order(order asc){
   delivers,
   turnaround,
   dark,
-  signature,
-  "imageUrl": image.asset->url
+  signature
 }`;
 
-// ─── JEWELLERY (resolved image URL) ──────────────────────────────────────────
+/* ─────────────────────────────────────────
+   Jewellery
+   ───────────────────────────────────────── */
 export const JEWELLERY_QUERY = `*[_type == "jewelleryCollection" && available != false] | order(order asc){
   _id,
   title,
   description,
-  image{ "url": asset->url, alt },
+  "imageUrl": image.asset->url,
   itemCount
 }`;
 
-// ─── CONVERSION STONES (unchanged) ───────────────────────────────────────────
+/* ─────────────────────────────────────────
+   IF→FL Case Studies
+   ───────────────────────────────────────── */
 export const CONVERSION_STONES_QUERY = `*[_type == "conversionStone"] | order(order asc){
   _id,
   stoneId,

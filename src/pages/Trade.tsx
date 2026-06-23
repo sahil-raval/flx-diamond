@@ -2,6 +2,10 @@ import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { EASE } from "@/lib/motion";
+import { useSanityQuery } from "@/lib/useSanityData";
+import { isSanityConfigured } from "@/lib/sanity";
+import { TRADE_PAGE_QUERY } from "@/lib/sanity-queries";
+import SeoHead from "@/components/SeoHead";
 
 /* ─── Animation variants ─────────────────────────────────────────── */
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.11 } } };
@@ -211,7 +215,27 @@ const VOLUME_OPTIONS = [
 ];
 
 /* ─── Page ───────────────────────────────────────────────────────── */
+interface SanityTradePage {
+  seo?: {
+    metaTitle?: string; metaDescription?: string; metaKeywords?: string;
+    ogTitle?: string; ogDescription?: string; ogImageUrl?: string;
+    twitterCard?: string; noIndex?: boolean;
+    structuredDataType?: string; additionalJsonLd?: string;
+  };
+  heroTagline?: string; heroHeading?: string; heroSubtext?: string;
+  heroCta?: string; heroSecondaryCta?: string;
+  partnerTypesTagline?: string; partnerTypesHeading?: string;
+  partnerTypes?: { title: string; body: string; tags: string[] }[];
+  accessTagline?: string; accessHeading?: string;
+  accessFeatures?: { title: string; body: string }[];
+  jewellersHeading?: string; jewellersBody?: string;
+  ctaHeading?: string; ctaBody?: string;
+}
+
 export default function Trade() {
+  const { data: sanityTrade } = useSanityQuery<SanityTradePage>(["trade-page"], TRADE_PAGE_QUERY);
+  const seo = sanityTrade?.seo;
+
   const formRef = useRef<HTMLDivElement>(null);
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "", company: "",
@@ -236,6 +260,20 @@ export default function Trade() {
   };
 
   return (
+    <>
+      <SeoHead
+        metaTitle={seo?.metaTitle || "Trade Portal | FLX Diamonds — B2B Diamond Sourcing for Jewellers & Retailers"}
+        metaDescription={seo?.metaDescription || "Trade-only access to GIA-certified natural and lab-grown diamonds. Standing supply briefs, bespoke sourcing, and IF→FL conversion. ABN verification required."}
+        metaKeywords={seo?.metaKeywords || "diamond trade portal, B2B diamond supply, jeweller diamond source, IF FL trade, GIA diamonds Australia trade"}
+        ogTitle={seo?.ogTitle}
+        ogDescription={seo?.ogDescription}
+        ogImageUrl={seo?.ogImageUrl}
+        twitterCard={seo?.twitterCard}
+        noIndex={seo?.noIndex}
+        structuredDataType={seo?.structuredDataType || "WebPage"}
+        additionalJsonLd={seo?.additionalJsonLd}
+        siteName="FLX Diamonds"
+      />
     <div style={{ fontFamily: "'Inter', sans-serif" }}>
 
       {/* ══════════════════════════════════════════
@@ -267,7 +305,7 @@ export default function Trade() {
               fontSize: "9px", letterSpacing: "0.55em", textTransform: "uppercase",
               color: "#1CA9C9", marginBottom: "28px", fontWeight: 500,
             }}>
-              Trade Partnership — B2B Only
+              {sanityTrade?.heroTagline || "Trade Partnership — B2B Only"}
             </motion.p>
 
             <motion.h1 variants={up} style={{
@@ -276,16 +314,14 @@ export default function Trade() {
               fontWeight: 400, color: "#fff", lineHeight: 1.05,
               marginBottom: "32px", maxWidth: "780px",
             }}>
-              Where the Diamond<br />Trade Comes to Source.
+              {sanityTrade?.heroHeading || "Where the Diamond Trade Comes to Source."}
             </motion.h1>
 
             <motion.p variants={up} style={{
               fontSize: "clamp(14px, 1.5vw, 17px)", color: "rgba(255,255,255,0.62)",
               maxWidth: "560px", lineHeight: 1.8, marginBottom: "52px",
             }}>
-              FLX Diamonds operates exclusively with established trade partners — jewellers,
-              manufacturers, traders, and portfolio buyers who require precision sourcing,
-              consistent supply, and a 47-year network they can rely on.
+              {sanityTrade?.heroSubtext || "FLX Diamonds operates exclusively with established trade partners — jewellers, manufacturers, traders, and portfolio buyers who require precision sourcing, consistent supply, and a 47-year network they can rely on."}
             </motion.p>
 
             <motion.div variants={up} style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
@@ -809,5 +845,6 @@ export default function Trade() {
       </section>
 
     </div>
+    </>
   );
 }

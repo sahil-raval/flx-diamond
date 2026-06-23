@@ -5,8 +5,6 @@ export interface TradeUser {
   email: string;
   company: string;
   phone: string;
-  firstName?: string;
-  lastName?: string;
 }
 
 interface AuthContextValue {

@@ -105,6 +105,40 @@ export default defineType({
       title: "Diamond Image",
       type: "image",
       options: { hotspot: true },
+      description: "Primary stone photo — shown in the inventory grid and quick-view panel.",
+    }),
+    defineField({
+      name: "images",
+      title: "Additional Images",
+      type: "array",
+      description: "Extra angles, inclusions close-ups, etc.",
+      of: [
+        {
+          type: "image",
+          options: { hotspot: true },
+          fields: [{ name: "alt", type: "string", title: "Alt Text" }],
+        },
+      ],
+    }),
+    defineField({
+      name: "video",
+      title: "360° / Detail Video",
+      type: "file",
+      description: "Short MP4 video loop showing the stone. Shown in the quick-view panel.",
+      options: { accept: "video/mp4,video/webm" },
+    }),
+    defineField({
+      name: "giaReportUrl",
+      title: "GIA Report URL",
+      type: "url",
+      description: "Link to the GIA report page, e.g. https://www.gia.edu/report-check?reportno=123456789",
+    }),
+    defineField({
+      name: "giaReportPdf",
+      title: "GIA Report PDF",
+      type: "file",
+      description: "Upload the GIA report PDF directly.",
+      options: { accept: "application/pdf" },
     }),
     defineField({
       name: "tradePrice",

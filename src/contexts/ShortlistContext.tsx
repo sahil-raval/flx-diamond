@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
-import type { Diamond } from "@/lib/diamond_types";
+import type { Diamond } from "@/lib/diamond-types";
 
 interface ShortlistContextValue {
   shortlist: Diamond[];

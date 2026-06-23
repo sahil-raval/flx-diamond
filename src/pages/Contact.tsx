@@ -2,7 +2,10 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { EASE } from "@/lib/motion";
 import { Link } from "wouter";
-import emailjs from '@emailjs/browser';
+import { useSanityQuery } from "@/lib/useSanityData";
+import { isSanityConfigured } from "@/lib/sanity";
+import { CONTACT_PAGE_QUERY } from "@/lib/sanity-queries";
+import SeoHead from "@/components/SeoHead";
 
 /* ─── Floating label input ──────────────────────────────────── */
 function FloatInput({ label, type = "text", testId, value, onChange, required }: {
@@ -155,28 +158,51 @@ const up = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
 };
 
+interface SanityContactPage {
+  seo?: {
+    metaTitle?: string; metaDescription?: string; metaKeywords?: string;
+    ogTitle?: string; ogDescription?: string; ogImageUrl?: string;
+    twitterCard?: string; noIndex?: boolean;
+    structuredDataType?: string; additionalJsonLd?: string;
+  };
+  heroTagline?: string; heroHeading?: string; heroSubtext?: string;
+  formTagline?: string; formHeading?: string; responsePromise?: string;
+  directContactTagline?: string; directContactHeading?: string;
+  email?: string;
+  phones?: { label: string; value: string; subtext?: string }[];
+  address?: string; abn?: string; privacyNote?: string;
+}
+
 export default function Contact() {
+  const { data: sanityContact } = useSanityQuery<SanityContactPage>(["contact-page"], CONTACT_PAGE_QUERY);
+  const seo = sanityContact?.seo;
+
+  const email = (isSanityConfigured && sanityContact?.email) || "help@flxdiamond.com";
+  const phones = (isSanityConfigured && sanityContact?.phones?.length)
+    ? sanityContact.phones
+    : [{ label: "Australia", value: "0474 817 548" }, { label: "India", value: "+91 99982 17496" }];
+  const address = (isSanityConfigured && sanityContact?.address) || "Geelong, Victoria, Australia";
+
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", company: "", type: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
   const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }));
-  const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
-  emailjs.send(
-    "service_3ogyae6",
-    "template_v64qxyt",
-    {
-      first_name:   form.firstName,
-      last_name:    form.lastName,
-      email:        form.email,
-      company:      form.company,
-      enquiry_type: form.type,
-      message:      form.message,
-    },
-    "djTnEdOabg0GN4UdP"
-  ).then(() => setSubmitted(true));
-};
+  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); setSubmitted(true); };
 
   return (
+    <>
+      <SeoHead
+        metaTitle={seo?.metaTitle || "Contact | FLX Diamonds — Begin the Conversation"}
+        metaDescription={seo?.metaDescription || "Get in touch with FLX Diamonds. Trade enquiries, diamond sourcing briefs, and IF→FL conversion assessments. Based in Geelong, Australia. Respond within 24 hours."}
+        metaKeywords={seo?.metaKeywords || "contact FLX Diamonds, diamond trade enquiry, IF FL conversion contact, Geelong diamond"}
+        ogTitle={seo?.ogTitle}
+        ogDescription={seo?.ogDescription}
+        ogImageUrl={seo?.ogImageUrl}
+        twitterCard={seo?.twitterCard}
+        noIndex={seo?.noIndex}
+        structuredDataType={seo?.structuredDataType || "LocalBusiness"}
+        additionalJsonLd={seo?.additionalJsonLd}
+        siteName="FLX Diamonds"
+      />
     <div style={{ fontFamily: "'Inter', sans-serif", background: "#F4F8FC", position: "relative" }}>
 
       {/* Teal radial glow top-right */}
@@ -237,7 +263,7 @@ export default function Contact() {
               <div style={{ width: "100%", height: "1px", background: "rgba(2,39,74,0.08)", marginBottom: "4px" }} />
               {[
                 { label: "Location", value: "Geelong, Victoria, Australia" },
-                { label: "Email",    value: "info@flxdiamond.com", teal: true },
+                { label: "Email",    value: "help@flxdiamond.com", teal: true },
                 { label: "Phone",    value: "0474 817 548  ·  +91 99982 17496" },
               ].map(({ label, value, teal }: any) => (
                 <motion.div key={label} variants={up} style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
@@ -300,7 +326,7 @@ export default function Contact() {
                       padding: "8px 18px", border: "1px solid rgba(28,169,201,0.3)",
                     }}>
                       <span style={{ fontSize: "9px", letterSpacing: "0.4em", textTransform: "uppercase", color: "#1CA9C9" }}>
-                        info@flxdiamond.com
+                        help@flxdiamond.com
                       </span>
                     </div>
                     <div>
@@ -389,6 +415,7 @@ export default function Contact() {
 
       </div>
     </div>
+    </>
   );
 }
 

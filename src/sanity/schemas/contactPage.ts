@@ -5,9 +5,10 @@ export default defineType({
   title: "Contact Page",
   type: "document",
   fields: [
+    defineField({ name: "seo", title: "SEO", type: "seoObject" }),
     defineField({
       name: "heroTagline",
-      title: "Hero Tagline",
+      title: "Hero Tagline (overline)",
       type: "string",
       initialValue: "Get in Touch",
     }),
@@ -15,63 +16,87 @@ export default defineType({
       name: "heroHeading",
       title: "Hero Heading",
       type: "string",
-      initialValue: "Begin the conversation.",
+      initialValue: "Begin the Conversation.",
     }),
     defineField({
       name: "heroSubtext",
       title: "Hero Subtext",
       type: "text",
       rows: 2,
-      initialValue:
-        "All enquiries are handled personally and under strict commercial confidence. There is no sales team — just a direct conversation with people who know the subject.",
+      initialValue: "We respond to every enquiry personally. Trade partners, investors, and jewellers — all communications are treated as commercially confidential.",
     }),
     defineField({
-      name: "stats",
-      title: "Key Stats",
-      type: "array",
-      of: [
-        {
-          type: "object",
-          fields: [
-            { name: "value", type: "string", title: "Stat Value (e.g. 47)" },
-            { name: "label", type: "string", title: "Stat Label (e.g. Years Experience)" },
-          ],
-          preview: { select: { title: "label", subtitle: "value" } },
-        },
-      ],
-    }),
-    defineField({
-      name: "enquiryTypes",
-      title: "Enquiry Types",
-      type: "array",
-      of: [{ type: "string" }],
-      description: "Options shown in the enquiry type dropdown",
-    }),
-    defineField({
-      name: "formConfirmationHeading",
-      title: "Form Confirmation Heading",
+      name: "formTagline",
+      title: "Form Tagline",
       type: "string",
-      initialValue: "Enquiry received.",
+      initialValue: "Send a Message",
     }),
     defineField({
-      name: "formConfirmationBody",
-      title: "Form Confirmation Body",
-      type: "text",
-      rows: 2,
-      initialValue:
-        "Thank you for reaching out. We will review your message and respond within 1–2 business days under strict commercial confidence.",
+      name: "formHeading",
+      title: "Form Heading",
+      type: "string",
+      initialValue: "We will get back to you within 24 hours.",
     }),
     defineField({
-      name: "seo",
-      title: "SEO",
-      type: "object",
-      fields: [
-        { name: "title", type: "string", title: "Page Title" },
-        { name: "description", type: "text", title: "Meta Description", rows: 3 },
+      name: "responsePromise",
+      title: "Response Promise",
+      type: "string",
+      initialValue: "We respond to every serious enquiry within 24 hours.",
+    }),
+    defineField({
+      name: "directContactTagline",
+      title: "Direct Contact Tagline",
+      type: "string",
+      initialValue: "Direct Contact",
+    }),
+    defineField({
+      name: "directContactHeading",
+      title: "Direct Contact Heading",
+      type: "string",
+      initialValue: "Reach us directly.",
+    }),
+    defineField({
+      name: "email",
+      title: "Email Address",
+      type: "string",
+      initialValue: "help@flxdiamond.com",
+    }),
+    defineField({
+      name: "phones",
+      title: "Phone Numbers",
+      type: "array",
+      of: [{
+        type: "object",
+        fields: [
+          { name: "label", type: "string", title: "Label (e.g. Australia)" },
+          { name: "value", type: "string", title: "Number" },
+          { name: "subtext", type: "string", title: "Subtext (e.g. Mon–Fri 9am–5pm AEST)" },
+        ],
+        preview: { select: { title: "label", subtitle: "value" } },
+      }],
+      initialValue: [
+        { label: "Australia", value: "0474 817 548", subtext: "Mon–Fri 9am–5pm AEST" },
+        { label: "India", value: "+91 99982 17496", subtext: "Available for international enquiries" },
       ],
+    }),
+    defineField({
+      name: "address",
+      title: "Business Address",
+      type: "string",
+      initialValue: "Geelong, Victoria, Australia",
+    }),
+    defineField({
+      name: "abn",
+      title: "ABN",
+      type: "string",
+      initialValue: "43 665 467 274",
+    }),
+    defineField({
+      name: "privacyNote",
+      title: "Privacy Note",
+      type: "string",
+      initialValue: "All enquiries are treated as commercially confidential. No information is shared with third parties.",
     }),
   ],
-  preview: {
-    prepare: () => ({ title: "Contact Page" }),
-  },
+  preview: { prepare: () => ({ title: "Contact Page" }) },
 });

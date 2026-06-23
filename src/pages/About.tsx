@@ -1,11 +1,11 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { EASE } from "@/lib/motion";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useSanityQuery } from "@/lib/useSanityData";
 import { isSanityConfigured } from "@/lib/sanity";
 import { ABOUT_PAGE_QUERY } from "@/lib/sanity-queries";
-import { useState, useEffect } from "react";
+import SeoHead from "@/components/SeoHead";
 
 const up = {
   hidden: { opacity: 0, y: 22 },
@@ -34,248 +34,6 @@ const PARTNERSHIPS = [
     detail: "Ongoing supply relationship spanning loose FL diamonds and GIA-verified conversion parcels.",
   },
 ];
-const TESTIMONIALS = [
-  {
-    quote: "Unlocked significant value from a 2.4ct IF stone we'd held for two years. The GIA FL certificate came back within the same carat bracket. Remarkable.",
-    role: "Senior Diamond Buyer",
-    location: "Dubai",
-  },
-  {
-    quote: "We've used FLXDIAMONDS for white-label sourcing across three collections. Their discretion is absolute. Our clients never know the source, and the quality speaks for itself.",
-    role: "Head of Procurement",
-    location: "Mumbai",
-  },
-  {
-    quote: "The assessment was free, the process was explained clearly, and the result exceeded expectations. For anyone holding IF stones, the conversation costs nothing.",
-    role: "Private Investor",
-    location: "Singapore",
-  },
-  {
-    quote: "What impressed us most was the transparency — a clear yes or no on viability, no sales pressure, and a result that genuinely moved the value of our inventory.",
-    role: "Jewellery Retailer",
-    location: "Melbourne",
-  },
-];
-function TestimonialSlider() {
-  const [idx, setIdx]       = useState(0);
-  const [dir, setDir]       = useState(1);
-  const [paused, setPaused] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const INTERVAL = 5000;
-
-  useEffect(() => {
-    if (paused) return;
-    setProgress(0);
-    const step = 50;
-    const inc  = (step / INTERVAL) * 100;
-    const prog = setInterval(() => setProgress(p => Math.min(p + inc, 100)), step);
-    const adv  = setTimeout(() => {
-      setDir(1);
-      setIdx(i => (i + 1) % TESTIMONIALS.length);
-    }, INTERVAL);
-    return () => { clearInterval(prog); clearTimeout(adv); };
-  }, [idx, paused]);
-
-  const goTo = (n: number) => {
-    setDir(n > idx ? 1 : -1);
-    setProgress(0);
-    setIdx(n);
-  };
-  const prev = () => goTo((idx - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
-  const next = () => goTo((idx + 1) % TESTIMONIALS.length);
-
-  const variants = {
-    enter:  (d: number) => ({ x: d > 0 ? 60 : -60, opacity: 0 }),
-    center: { x: 0, opacity: 1 },
-    exit:   (d: number) => ({ x: d > 0 ? -60 : 60, opacity: 0 }),
-  };
-
-  const t = TESTIMONIALS[idx];
-
-  return (
-    <div
-      className="relative mx-auto"
-      style={{ maxWidth: "860px" }}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
-      <div
-        className="relative px-6 sm:px-10 md:px-20 py-10 md:py-16"
-        style={{
-          background: "white",
-          border: "1px solid rgba(28,169,201,0.18)",
-          boxShadow: "0 8px 48px rgba(2,39,74,0.07)",
-        }}
-      >
-        <span
-          className="absolute top-6 left-6 sm:top-8 sm:left-8 md:left-12 font-serif select-none pointer-events-none"
-          style={{ color: "#1CA9C9", fontSize: "4rem", lineHeight: 1, opacity: 0.12 }}
-        >
-          &ldquo;
-        </span>
-        <div className="overflow-hidden" style={{ minHeight: "180px" }}>
-          <AnimatePresence custom={dir} mode="wait">
-            <motion.div
-              key={idx}
-              custom={dir}
-              variants={variants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.42, ease: [0.76, 0, 0.24, 1] }}
-              className="flex flex-col items-center text-center gap-6 sm:gap-7"
-            >
-              {/* Quote */}
-              <p
-                className="font-playfair text-base sm:text-lg md:text-xl font-light italic leading-relaxed"
-                style={{ color: "#02274A", maxWidth: "640px" }}
-              >
-                {t.quote}
-              </p>
-
-              {/* Attribution */}
-              <div className="flex flex-col items-center gap-1.5">
-                <div
-                  className="w-8 h-px mb-2"
-                  style={{ background: "linear-gradient(90deg, transparent, #1CA9C9, transparent)" }}
-                />
-                <p
-                  className="text-[11px] uppercase tracking-[0.35em] font-medium"
-                  style={{ color: "rgba(2,39,74,0.5)" }}
-                >
-                  {t.role}
-                </p>
-                <p
-                  className="text-[10px] uppercase tracking-[0.3em]"
-                  style={{ color: "#1CA9C9" }}
-                >
-                  {t.location}
-                </p>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-        <div
-          className="absolute bottom-0 left-0 right-0 h-[2px] overflow-hidden"
-          style={{ background: "rgba(2,39,74,0.06)" }}
-        >
-          <motion.div
-            className="h-full"
-            style={{ background: "#1CA9C9" }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0 }}
-          />
-        </div>
-      </div>
-
-      {/* Prev arrow — outside card left */}
-      <button
-        onClick={prev}
-        aria-label="Previous testimonial"
-        className="absolute top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center transition-all group"
-        style={{
-          left: "-64px",
-          width: "44px",
-          height: "44px",
-          border: "1px solid rgba(28,169,201,0.35)",
-          background: "white",
-          color: "#1CA9C9",
-          boxShadow: "0 2px 12px rgba(2,39,74,0.08)",
-        }}
-        onMouseEnter={e => {
-          (e.currentTarget as HTMLButtonElement).style.background = "#1CA9C9";
-          (e.currentTarget as HTMLButtonElement).style.color = "white";
-        }}
-        onMouseLeave={e => {
-          (e.currentTarget as HTMLButtonElement).style.background = "white";
-          (e.currentTarget as HTMLButtonElement).style.color = "#1CA9C9";
-        }}
-      >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M9 2L4 7l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
-
-      {/* Next arrow — outside card right */}
-      <button
-        onClick={next}
-        aria-label="Next testimonial"
-        className="absolute top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center transition-all"
-        style={{
-          right: "-64px",
-          width: "44px",
-          height: "44px",
-          border: "1px solid rgba(28,169,201,0.35)",
-          background: "white",
-          color: "#1CA9C9",
-          boxShadow: "0 2px 12px rgba(2,39,74,0.08)",
-        }}
-        onMouseEnter={e => {
-          (e.currentTarget as HTMLButtonElement).style.background = "#1CA9C9";
-          (e.currentTarget as HTMLButtonElement).style.color = "white";
-        }}
-        onMouseLeave={e => {
-          (e.currentTarget as HTMLButtonElement).style.background = "white";
-          (e.currentTarget as HTMLButtonElement).style.color = "#1CA9C9";
-        }}
-      >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M5 2l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </button>
-
-      {/* Mobile prev/next row */}
-      <div className="flex md:hidden justify-center gap-3 mt-5">
-        <button
-          onClick={prev}
-          aria-label="Previous"
-          className="flex items-center justify-center"
-          style={{
-            width: "40px", height: "40px",
-            border: "1px solid rgba(28,169,201,0.4)",
-            background: "white", color: "#1CA9C9",
-          }}
-        >
-          <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
-            <path d="M9 2L4 7l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-        <button
-          onClick={next}
-          aria-label="Next"
-          className="flex items-center justify-center"
-          style={{
-            width: "40px", height: "40px",
-            border: "1px solid rgba(28,169,201,0.4)",
-            background: "white", color: "#1CA9C9",
-          }}
-        >
-          <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
-            <path d="M5 2l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-      </div>
-
-      {/* Dot nav */}
-      <div className="flex justify-center gap-2 mt-6">
-        {TESTIMONIALS.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => goTo(i)}
-            aria-label={`Go to testimonial ${i + 1}`}
-            className="transition-all"
-            style={{
-              width: i === idx ? "28px" : "7px",
-              height: "7px",
-              background: i === idx ? "#1CA9C9" : "rgba(2,39,74,0.15)",
-              borderRadius: "4px",
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
 
 const PILLARS = [
   {
@@ -293,12 +51,18 @@ const PILLARS = [
 ];
 
 interface SanityAboutPage {
+  seo?: {
+    metaTitle?: string; metaDescription?: string; metaKeywords?: string;
+    ogTitle?: string; ogDescription?: string; ogImageUrl?: string;
+    twitterCard?: string; noIndex?: boolean;
+    structuredDataType?: string; additionalJsonLd?: string;
+  };
   partnerships?: { name: string; role: string; detail: string }[];
   pillars?: { label: string; body: string }[];
   heroTagline?: string;
   heroHeading?: string;
   heroSubtext?: string;
-  craftsman?: { name: string; beganCutting: string; yearsMastery: string; primaryCraft: string; basedIn: string; biography?: string[] };
+  craftsman?: { name: string; beganCutting: string; yearsMastery: string; primaryCraft: string; basedIn: string; biography?: string[]; photoUrl?: string };
   techniqueSteps?: { step: string; title: string; body: string }[];
   ctaHeading?: string;
   ctaBody?: string;
@@ -315,7 +79,23 @@ export default function About() {
     ? sanityAbout.pillars
     : PILLARS;
 
+  const seo = sanityAbout?.seo;
+
   return (
+    <>
+      <SeoHead
+        metaTitle={seo?.metaTitle || "About | FLX Diamonds — Heritage, Mastery & IF→FL Precision"}
+        metaDescription={seo?.metaDescription || "47 years of diamond mastery. Babu Vekariya pioneered the IF→FL conversion technique from Geelong, Australia. GIA-certified sourcing for global trade partners."}
+        metaKeywords={seo?.metaKeywords || "FLX Diamonds about, Babu Vekariya, diamond craftsman, IF to FL conversion, diamond sourcing Geelong"}
+        ogTitle={seo?.ogTitle}
+        ogDescription={seo?.ogDescription}
+        ogImageUrl={seo?.ogImageUrl}
+        twitterCard={seo?.twitterCard}
+        noIndex={seo?.noIndex}
+        structuredDataType={seo?.structuredDataType || "WebPage"}
+        additionalJsonLd={seo?.additionalJsonLd}
+        siteName="FLX Diamonds"
+      />
     <div className="" style={{ fontFamily: "'Inter', sans-serif" }}>
 
       {/* ── Hero ── */}
@@ -353,11 +133,20 @@ export default function About() {
             variants={stagger}
             className="lg:col-span-1 space-y-6"
           >
+            {sanityAbout?.craftsman?.photoUrl && (
+              <motion.div variants={up} className="overflow-hidden" style={{ aspectRatio: "3/4", maxHeight: "320px" }}>
+                <img
+                  src={sanityAbout.craftsman.photoUrl}
+                  alt={sanityAbout.craftsman?.name || "Babu Vekariya"}
+                  className="w-full h-full object-cover object-top"
+                />
+              </motion.div>
+            )}
             <motion.p variants={up} className="text-[10px] uppercase tracking-[0.4em] font-medium" style={{ color: "#1CA9C9" }}>
               The Craftsman
             </motion.p>
             <motion.h2 variants={up} className="font-serif text-4xl text-[#02274A] leading-tight">
-              Babu Vekariya
+              {sanityAbout?.craftsman?.name || "Babu Vekariya"}
             </motion.h2>
             <motion.span variants={up} className="block w-10 h-px" style={{ background: "#1CA9C9" }} />
             <motion.div variants={up} className="space-y-0">
@@ -529,8 +318,6 @@ export default function About() {
             </motion.h2>
           </motion.div>
 
-
-
           <motion.div
             initial="hidden"
             whileInView="visible"
@@ -545,32 +332,6 @@ export default function About() {
               </motion.div>
             ))}
           </motion.div>
-        </div>
-      </section>
-
-      <section className="py-16 sm:py-24 px-4 sm:px-6" style={{ background: "#F4F8FC" }}>
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger}
-            className="mb-10 sm:mb-14 text-center">
-            <motion.p variants={up} className="text-[10px] uppercase tracking-[0.45em] mb-4 font-medium" style={{ color: "#1CA9C9" }}>
-              From Our Partners
-            </motion.p>
-            <motion.h2 variants={up} className="font-serif text-3xl sm:text-4xl md:text-5xl" style={{ color: "#02274A" }}>
-              What the trade says.
-            </motion.h2>
-          </motion.div>
-          <div className="px-0 md:px-16">
-            <TestimonialSlider />
-          </div>
-          <motion.p
-            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-            transition={{ delay: 0.5, duration: 0.7 }}
-            className="text-center mt-8 sm:mt-10 text-[9px] uppercase tracking-[0.3em]"
-            style={{ color: "rgba(2,39,74,0.35)" }}
-          >
-            All testimonials are anonymised by request. Full references available to verified trade partners.
-          </motion.p>
         </div>
       </section>
 
@@ -615,5 +376,6 @@ export default function About() {
       </section>
 
     </div>
+    </>
   );
 }

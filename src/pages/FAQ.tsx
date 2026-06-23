@@ -7,6 +7,7 @@ import { Plus, Minus } from "lucide-react";
 import { useSanityQuery } from "@/lib/useSanityData";
 import { isSanityConfigured } from "@/lib/sanity";
 import { FAQ_CATEGORIES_QUERY } from "@/lib/sanity-queries";
+import SeoHead from "@/components/SeoHead";
 
 const up = {
   hidden: { opacity: 0, y: 22 },
@@ -202,6 +203,14 @@ export default function FAQ() {
   const toggle = (key: string) => setOpenItem(prev => prev === key ? null : key);
 
   return (
+    <>
+      <SeoHead
+        metaTitle="FAQ | FLX Diamonds — IF→FL Conversion, GIA Certification & Trade Questions"
+        metaDescription="Common questions about the IF→FL conversion process, GIA re-certification, diamond pricing, and trade access. Answered by FLX Diamonds specialists."
+        metaKeywords="IF FL conversion FAQ, GIA recertification questions, diamond trade FAQ, FLX Diamonds questions"
+        structuredDataType="FAQPage"
+        siteName="FLX Diamonds"
+      />
     <div className="" style={{ fontFamily: "'Inter', sans-serif" }}>
 
       {/* ── Hero ── */}
@@ -387,5 +396,6 @@ export default function FAQ() {
       </section>
 
     </div>
+    </>
   );
 }

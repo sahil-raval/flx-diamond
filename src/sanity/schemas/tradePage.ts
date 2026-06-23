@@ -5,9 +5,10 @@ export default defineType({
   title: "Trade Page",
   type: "document",
   fields: [
+    defineField({ name: "seo", title: "SEO", type: "seoObject" }),
     defineField({
       name: "heroTagline",
-      title: "Hero Tagline",
+      title: "Hero Tagline (overline)",
       type: "string",
       initialValue: "Trade Partners",
     }),
@@ -15,99 +16,116 @@ export default defineType({
       name: "heroHeading",
       title: "Hero Heading",
       type: "string",
-      initialValue: "For the trade only.",
+      initialValue: "Where the Diamond Trade Comes to Source.",
     }),
     defineField({
       name: "heroSubtext",
       title: "Hero Subtext",
       type: "text",
-      rows: 2,
-      initialValue:
-        "We work exclusively with established diamond and jewellery trade professionals. Apply for a trade account to access our full inventory, trade pricing, and sourcing services.",
+      rows: 3,
+      initialValue: "Trade-only pricing. No retail. Verified ABN or equivalent required. Our partners are jewellers, retailers, manufacturers, and institutional buyers who understand the market.",
     }),
     defineField({
-      name: "whoQualifies",
-      title: "Who Qualifies",
+      name: "heroCta",
+      title: "Hero CTA",
+      type: "string",
+      initialValue: "Apply for Trade Access",
+    }),
+    defineField({
+      name: "heroSecondaryCta",
+      title: "Hero Secondary CTA",
+      type: "string",
+      initialValue: "Browse Inventory",
+    }),
+    defineField({
+      name: "partnerTypesTagline",
+      title: "Partner Types Tagline",
+      type: "string",
+      initialValue: "Who We Work With",
+    }),
+    defineField({
+      name: "partnerTypesHeading",
+      title: "Partner Types Heading",
+      type: "string",
+      initialValue: "Built for the trade.",
+    }),
+    defineField({
+      name: "partnerTypes",
+      title: "Partner Types",
       type: "array",
-      of: [
-        {
-          type: "object",
-          fields: [
-            { name: "title", type: "string", title: "Title" },
-            { name: "body", type: "text", title: "Description", rows: 3 },
-          ],
-          preview: { select: { title: "title" } },
-        },
+      of: [{
+        type: "object",
+        fields: [
+          { name: "title", type: "string", title: "Partner Type" },
+          { name: "body", type: "text", title: "Description", rows: 3 },
+          { name: "tags", title: "Tags", type: "array", of: [{ type: "string" }] },
+        ],
+        preview: { select: { title: "title" } },
+      }],
+      initialValue: [
+        { title: "Diamond Traders", body: "International traders sourcing stones for resale or manufacturing. We supply GIA-certified stones at trade pricing with full cert documentation.", tags: ["Natural", "Lab-Grown", "Melee"] },
+        { title: "Manufacturers", body: "Diamond manufacturers who need consistent supply for production — matching parcels, melee, calibrated stones. We source to exact specification.", tags: ["Matched Parcels", "Calibrated", "Standing Briefs"] },
+        { title: "Retailers & Jewellers", body: "Independent jewellers and multi-door retailers requiring a reliable, discreet supply partner. Your margin stays yours — we work to your brief.", tags: ["Discreet", "ABN Verified", "Trade Pricing"] },
+        { title: "Investment Buyers", body: "Private and institutional buyers seeking GIA FL and IF stones as hard assets. We advise on selection, market timing, and re-sale pathways.", tags: ["Investment Grade", "GIA FL/IF", "Advisory"] },
       ],
     }),
     defineField({
-      name: "whatWeOffer",
-      title: "What We Offer",
+      name: "accessTagline",
+      title: "Trade Access Tagline",
+      type: "string",
+      initialValue: "Trade Partner Benefits",
+    }),
+    defineField({
+      name: "accessHeading",
+      title: "Trade Access Heading",
+      type: "string",
+      initialValue: "What Trade Partners Access",
+    }),
+    defineField({
+      name: "accessFeatures",
+      title: "Trade Access Features",
       type: "array",
-      of: [
-        {
-          type: "object",
-          fields: [
-            { name: "title", type: "string", title: "Title" },
-            { name: "body", type: "text", title: "Description", rows: 3 },
-          ],
-          preview: { select: { title: "title" } },
-        },
+      of: [{
+        type: "object",
+        fields: [
+          { name: "title", type: "string", title: "Feature Title" },
+          { name: "body", type: "text", title: "Feature Description", rows: 2 },
+        ],
+        preview: { select: { title: "title" } },
+      }],
+      initialValue: [
+        { title: "Standing Supply Briefs", body: "Set a recurring specification — shape, carat, colour, clarity — and we source against it on an ongoing basis." },
+        { title: "Bespoke Sourcing", body: "One-off briefs for specific stones. We leverage our network in Antwerp, Mumbai, and Surat to find what the open market doesn't surface." },
+        { title: "Discreet White-Label", body: "Your clients don't need to know who your source is. All documentation is issued under your instructions." },
+        { title: "IF→FL Conversion", body: "Partners who hold IF stones can submit certs for assessment. We convert eligible stones with a new GIA FL certificate — 50/50 profit split, no upfront cost." },
       ],
     }),
     defineField({
-      name: "processTagline",
-      title: "Process Section Tagline",
+      name: "jewellersHeading",
+      title: "Jewellers Section Heading",
       type: "string",
-      initialValue: "The Process",
+      initialValue: "How we work with jewellers",
     }),
     defineField({
-      name: "processHeading",
-      title: "Process Section Heading",
+      name: "jewellersBody",
+      title: "Jewellers Section Body",
+      type: "text",
+      rows: 4,
+      initialValue: "If a retail customer mentions they're working with a jeweller, we loop that jeweller in rather than transact directly. Our customers without a jeweller stay ours to refer — once they have one, that relationship is theirs.",
+    }),
+    defineField({
+      name: "ctaHeading",
+      title: "CTA Heading",
       type: "string",
-      initialValue: "How to become a trade partner.",
+      initialValue: "Ready to establish a trade relationship?",
     }),
     defineField({
-      name: "processSteps",
-      title: "Process Steps",
-      type: "array",
-      of: [
-        {
-          type: "object",
-          fields: [
-            { name: "step", type: "string", title: "Step Number (e.g. 01)" },
-            { name: "title", type: "string", title: "Step Title" },
-            { name: "body", type: "text", title: "Step Description", rows: 3 },
-          ],
-          preview: { select: { title: "title", subtitle: "step" } },
-        },
-      ],
-    }),
-    defineField({
-      name: "formHeading",
-      title: "Application Form Heading",
-      type: "string",
-      initialValue: "Apply for a trade account.",
-    }),
-    defineField({
-      name: "formSubtext",
-      title: "Application Form Subtext",
+      name: "ctaBody",
+      title: "CTA Body",
       type: "text",
       rows: 2,
-      initialValue:
-        "All applications are reviewed personally. We will respond within 2 business days.",
-    }),
-    defineField({
-      name: "seo",
-      title: "SEO",
-      type: "object",
-      fields: [
-        { name: "title", type: "string", title: "Page Title" },
-        { name: "description", type: "text", title: "Meta Description", rows: 3 },
-      ],
+      initialValue: "We verify every partner before opening trade pricing. The process takes 24–48 hours. ABN or equivalent required.",
     }),
   ],
-  preview: {
-    prepare: () => ({ title: "Trade Page" }),
-  },
+  preview: { prepare: () => ({ title: "Trade Page" }) },
 });

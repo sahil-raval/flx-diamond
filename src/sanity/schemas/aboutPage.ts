@@ -5,15 +5,7 @@ export default defineType({
   title: "About Page",
   type: "document",
   fields: [
-    defineField({
-      name: "seo",
-      title: "SEO",
-      type: "object",
-      fields: [
-        { name: "title", type: "string", title: "Page Title" },
-        { name: "description", type: "text", title: "Meta Description", rows: 3 },
-      ],
-    }),
+    defineField({ name: "seo", title: "SEO", type: "seoObject" }),
     defineField({
       name: "heroTagline",
       title: "Hero Tagline",

@@ -85,8 +85,8 @@ export default function Privacy() {
               Under the Australian Privacy Act 1988, you have the right to access, correct, or
               request deletion of personal information we hold about you. To exercise any of these
               rights, contact us at{" "}
-              <a href="mailto:info@flxdiamond.com" style={{ color: "#1CA9C9" }}>
-                info@flxdiamond.com
+              <a href="mailto:help@flxdiamond.com" style={{ color: "#1CA9C9" }}>
+                help@flxdiamond.com
               </a>
               .
             </p>
@@ -97,8 +97,8 @@ export default function Privacy() {
             <p>
               FLX Diamonds Pty Ltd<br />
               Geelong, Victoria, Australia<br />
-              <a href="mailto:info@flxdiamond.com" style={{ color: "#1CA9C9" }}>
-                info@flxdiamond.com
+              <a href="mailto:help@flxdiamond.com" style={{ color: "#1CA9C9" }}>
+                help@flxdiamond.com
               </a>
             </p>
           </section>
