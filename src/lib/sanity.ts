@@ -52,4 +52,3 @@ export async function sanityFetch<T>(query: string, params?: Record<string, unkn
     return null;
   }
 }
-
