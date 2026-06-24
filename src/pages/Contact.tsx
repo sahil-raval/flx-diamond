@@ -236,14 +236,14 @@ export default function Contact() {
               fontSize: "9px", letterSpacing: "0.55em", textTransform: "uppercase",
               color: "#1CA9C9", marginBottom: "24px", fontWeight: 500,
             }}>
-              Begin the Conversation
+              {(isSanityConfigured && sanityContact?.heroTagline) || "Get in Touch"}
             </motion.p>
 
             <motion.h1 variants={up} className="font-serif" style={{
               fontSize: "clamp(3rem, 6vw, 5.5rem)",
               lineHeight: 1.05, color: "#02274A", marginBottom: "28px",
             }}>
-              Get in touch.
+              {(isSanityConfigured && sanityContact?.heroHeading) || "Get in touch."}
             </motion.h1>
 
             <motion.div variants={up} style={{ display: "flex", gap: "10px", marginBottom: "32px" }}>
@@ -255,16 +255,17 @@ export default function Contact() {
               fontSize: "14px", lineHeight: 1.8,
               color: "rgba(2,39,74,0.5)", maxWidth: "340px", marginBottom: "56px",
             }}>
-              All enquiries are handled personally under strict commercial confidence. No sales process, just a direct conversation.
+              {(isSanityConfigured && sanityContact?.heroSubtext) ||
+                "All enquiries are handled personally under strict commercial confidence. No sales process, just a direct conversation."}
             </motion.p>
 
             {/* Contact details */}
             <motion.div variants={stagger} initial="hidden" animate="visible" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               <div style={{ width: "100%", height: "1px", background: "rgba(2,39,74,0.08)", marginBottom: "4px" }} />
               {[
-                { label: "Location", value: "Geelong, Victoria, Australia" },
-                { label: "Email",    value: "help@flxdiamond.com", teal: true },
-                { label: "Phone",    value: "0474 817 548  ·  +91 99982 17496" },
+                { label: "Location", value: address },
+                { label: "Email",    value: email, teal: true },
+                { label: "Phone",    value: phones.map(p => p.value).join("  ·  ") },
               ].map(({ label, value, teal }: any) => (
                 <motion.div key={label} variants={up} style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
                   <span style={{ fontSize: "8px", letterSpacing: "0.42em", textTransform: "uppercase", color: "rgba(2,39,74,0.3)" }}>
@@ -318,7 +319,7 @@ export default function Contact() {
                         Enquiry received.
                       </h2>
                       <p style={{ fontSize: "13px", lineHeight: 1.7, color: "rgba(2,39,74,0.5)", maxWidth: "300px", margin: "0 auto" }}>
-                        We will respond personally within one business day. All correspondence is commercially confidential.
+                        {(isSanityConfigured && sanityContact?.responsePromise) || "We will respond personally within one business day. All correspondence is commercially confidential."}
                       </p>
                     </div>
                     <div style={{
@@ -326,7 +327,7 @@ export default function Contact() {
                       padding: "8px 18px", border: "1px solid rgba(28,169,201,0.3)",
                     }}>
                       <span style={{ fontSize: "9px", letterSpacing: "0.4em", textTransform: "uppercase", color: "#1CA9C9" }}>
-                        help@flxdiamond.com
+                        {email}
                       </span>
                     </div>
                     <div>
@@ -350,7 +351,7 @@ export default function Contact() {
                   >
                     <div style={{ marginBottom: "32px" }}>
                       <p style={{ fontSize: "8px", letterSpacing: "0.52em", textTransform: "uppercase", color: "rgba(2,39,74,0.35)", marginBottom: "8px", fontWeight: 500 }}>
-                        Enquiry Form
+                        {(isSanityConfigured && sanityContact?.formTagline) || "Enquiry Form"}
                       </p>
                       <div style={{ width: "28px", height: "1px", background: "#1CA9C9" }} />
                     </div>
@@ -372,7 +373,7 @@ export default function Contact() {
                       fontSize: "8px", letterSpacing: "0.28em", textTransform: "uppercase",
                       color: "rgba(2,39,74,0.22)",
                     }}>
-                      All correspondence is commercially confidential
+                      {(isSanityConfigured && sanityContact?.privacyNote) || "All correspondence is commercially confidential"}
                     </p>
                   </motion.form>
                 )}

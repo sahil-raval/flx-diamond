@@ -77,16 +77,7 @@ export default defineType({
       initialValue: false,
       description: "Featured articles appear prominently at the top of the Journal page.",
     }),
-    defineField({
-      name: "seo",
-      title: "SEO",
-      type: "object",
-      fields: [
-        { name: "title", type: "string", title: "Page Title" },
-        { name: "description", type: "text", title: "Meta Description", rows: 3 },
-        { name: "ogImage", type: "image", title: "Open Graph Image", options: { hotspot: true } },
-      ],
-    }),
+    defineField({ name: "seo", title: "SEO", type: "seoObject" }),
   ],
   orderings: [
     {

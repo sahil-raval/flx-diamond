@@ -17,22 +17,42 @@ export interface Diamond {
   certification: Certification;
   imageUrl?: string;
   certificateNumber?: string;
-
-  /** Optional extended fields — populated for legacy/hardcoded inventory,
-   *  shown in the Quick View modal / Bloomberg-terminal table when present.
-   *  Sanity-managed stones typically leave these undefined. */
-  listedAmt?: number;
+  /* ── Extended trade fields ── */
+  loc?: string;
+  lab?: string;
+  rap?: number;
+  rapVal?: number;
   listedPrCt?: number;
   listedDisc?: number;
-  rap?: number;
+  listedAmt?: number;
   tableP?: number;
-  depth?: number;
-  ca?: number;
-  pa?: number;
-  ratio?: number;
-  origin?: string;
-  ha?: "Y" | "N" | string;
   shade?: string;
-  loc?: string;
+  depth?: number;
   certNo?: string;
+  ratio?: number;
+  ca?: number;
+  ch?: number;
+  girdlePct?: number;
+  pa?: number;
+  ph?: number;
+  lh?: number;
+  sl?: number;
+  culet?: string;
+  girdleDesc?: string;
+  tb?: string;
+  sb?: string;
+  tInc?: string;
+  sInc?: string;
+  tableOpen?: string;
+  co?: string;
+  po?: string;
+  milky?: string;
+  ec?: string;
+  rptCom?: string;
+  keyToSymbols?: string;
+  ins?: string;
+  luster?: string;
+  origin?: string;
+  tracrId?: string;
+  ha?: string;
 }

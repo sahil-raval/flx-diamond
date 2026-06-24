@@ -108,17 +108,15 @@ export default function About() {
         >
           <div className="space-y-5 md:space-y-6">
             <motion.p variants={up} className="text-[10px] uppercase tracking-[0.45em] font-medium" style={{ color: "#1CA9C9" }}>
-              Our Story
+              {(isSanityConfigured && sanityAbout?.heroTagline) || "Our Story"}
             </motion.p>
             <motion.h1 variants={up} className="font-serif leading-[1.05]" style={{ fontSize: "clamp(2.8rem, 7vw, 5.5rem)", color: "rgba(255,255,255,0.92)" }}>
-              Heritage.<br />Mastery.<br />
-              <span style={{ color: "rgba(255,255,255,0.22)" }}>Quiet Confidence.</span>
+              {(isSanityConfigured && sanityAbout?.heroHeading) || "Heritage. Mastery. Quiet Confidence."}
             </motion.h1>
             <motion.span variants={up} className="block w-10 h-px" style={{ background: "#1CA9C9" }} />
           </div>
           <motion.p variants={up} className="text-sm sm:text-base leading-relaxed" style={{ color: "rgba(255,255,255,0.42)" }}>
-            FLX Diamonds was built around one craftsman's 47 years of accumulated knowledge,
-            knowledge that cannot be certified, cannot be replicated, and cannot be rushed.
+            {(isSanityConfigured && sanityAbout?.heroSubtext) || "FLX Diamonds was built around one craftsman's 47 years of accumulated knowledge, knowledge that cannot be certified, cannot be replicated, and cannot be rushed."}
           </motion.p>
         </motion.div>
       </section>
@@ -345,11 +343,10 @@ export default function About() {
           className="max-w-2xl mx-auto space-y-8"
         >
           <motion.h2 variants={up} className="font-serif text-4xl text-[#02274A] leading-tight">
-            Ready to begin a<br />
-            <span style={{ color: "rgba(2,39,74,0.35)" }}>serious conversation?</span>
+            {(isSanityConfigured && sanityAbout?.ctaHeading) || "Ready to begin a serious conversation?"}
           </motion.h2>
           <motion.p variants={up} className="text-base" style={{ color: "rgba(2,39,74,0.45)" }}>
-            All enquiries are handled directly and under strict commercial confidence.
+            {(isSanityConfigured && sanityAbout?.ctaBody) || "All enquiries are handled directly and under strict commercial confidence."}
           </motion.p>
           <motion.div variants={up} className="flex justify-center gap-4 flex-wrap">
             <Link href="/contact">

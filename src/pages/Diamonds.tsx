@@ -7,8 +7,8 @@ import { useState, useMemo, useRef } from "react";
   import { Link, useLocation } from "wouter";
   import { Button } from "@/components/ui/button";
   import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-  import { useShortlist } from "@/contexts/ShortlistContext";
-  import { useAuth } from "@/contexts/AuthContext";
+  import { useShortlist } from "@/context/ShortlistContext";
+  import { useAuth } from "@/context/AuthContext";
   import type { Diamond } from "@/lib/diamond-types";
 
   /* ── EmailJS config ─────────────────────────────────────── */

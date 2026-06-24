@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useInView, useMotionValue, useSpring } from "f
 import { useSanityQuery } from "@/lib/useSanityData";
 import { isSanityConfigured } from "@/lib/sanity";
 import { HOME_PAGE_QUERY } from "@/lib/sanity-queries";
+import SeoHead from "@/components/SeoHead";
 import { EASE } from "@/lib/motion";
 import { Marquee, ScrollReveal, StaggerGroup, StaggerItem, LineMask, ParallaxLayer } from "@/lib/scroll";
 import { Link } from "wouter";
@@ -855,14 +856,50 @@ function FeaturedStoneCard({
    COMPONENT
 ══════════════════════════════════════════════════════ */
 interface SanityHomePage {
+  seo?: {
+    metaTitle?: string; metaDescription?: string; metaKeywords?: string;
+    ogTitle?: string; ogDescription?: string; ogImageUrl?: string;
+    twitterCard?: string; noIndex?: boolean;
+    structuredDataType?: string; additionalJsonLd?: string;
+  };
+  heroOverline?: string;
   heroHeading?: string;
   heroSubtext?: string;
   heroCta?: string;
   heroSecondaryCta?: string;
+  heroVideoUrl?: string;
   marqueeItems?: string[];
+  manufacturingTagline?: string;
+  manufacturingHeading?: string;
+  manufacturingBody?: string;
+  manufacturingCta?: string;
+  manufacturingVideoUrl?: string;
+  manufacturingImageUrl?: string;
+  closingImageUrl?: string;
+  profitSplitHeading?: string;
+  profitSplitBody?: string;
+  tradePortalTagline?: string;
+  tradePortalHeading?: string;
+  tradePortalJewellersHeading?: string;
+  tradePortalJewellersBody?: string;
+  tradePortalHowHeading?: string;
+  tradePortalHowBody?: string;
+  investmentTagline?: string;
+  investmentHeading?: string;
+  investmentBody?: string;
+  investmentCta?: string;
+  investmentPoints?: string[];
+  noPitchHeading?: string;
+  noPitchBody?: string;
+  featuredInventoryTagline?: string;
+  featuredInventoryHeading?: string;
+  featuredInventoryNote?: string;
+  testimonials?: { quote: string; author: string; region: string }[];
   faqs?: { q: string; a: string }[];
   ctaSectionHeading?: string;
   ctaSectionBody?: string;
+  closingQuote?: string;
+  closingCta?: string;
 }
 
 export default function Home() {
@@ -948,7 +985,23 @@ export default function Home() {
 
   const selectedBuyer = BUYER_TYPES.find(b => b.id === selected);
 
+  const seo = sanityHome?.seo;
+
   return (
+    <>
+      <SeoHead
+        metaTitle={seo?.metaTitle || "FLX Diamonds — B2B Diamond Sourcing & IF→FL Conversion | Geelong, Australia"}
+        metaDescription={seo?.metaDescription || "GIA-certified diamond sourcing and precision IF→FL conversion for jewellers, retailers, and investors. Trade-only. 47 years of mastery. Geelong, Australia."}
+        metaKeywords={seo?.metaKeywords || "FLX Diamonds, diamond sourcing Australia, IF to FL conversion, GIA certified diamonds, trade diamonds Geelong, B2B diamond supply"}
+        ogTitle={seo?.ogTitle}
+        ogDescription={seo?.ogDescription}
+        ogImageUrl={seo?.ogImageUrl}
+        twitterCard={seo?.twitterCard}
+        noIndex={seo?.noIndex}
+        structuredDataType={seo?.structuredDataType || "Organization"}
+        additionalJsonLd={seo?.additionalJsonLd}
+        siteName="FLX Diamonds"
+      />
     <div className="flex flex-col min-h-screen" style={{ fontFamily: "'Inter', sans-serif" }}>
 
       {/* ══════════════════════════════════════════════════
@@ -967,8 +1020,14 @@ export default function Home() {
           preload="auto"
           aria-hidden="true"
         >
-          <source src="/hero-ocean-4k.mp4" type="video/mp4" />
-          <source src="/hero-ocean.mp4" type="video/mp4" />
+          {sanityHome?.heroVideoUrl ? (
+            <source src={sanityHome.heroVideoUrl} type="video/mp4" />
+          ) : (
+            <>
+              <source src="/hero-ocean-4k.mp4" type="video/mp4" />
+              <source src="/hero-ocean.mp4" type="video/mp4" />
+            </>
+          )}
         </video>
 
         {/* Deep ocean overlays — layered for depth */}
@@ -1033,7 +1092,7 @@ export default function Home() {
               className="text-[10px] uppercase tracking-[0.4em] sm:tracking-[0.5em] font-medium mb-4 sm:mb-5"
               style={{ color: "#1CA9C9" }}
             >
-              Geelong, Victoria, Australia · Est. 1978
+              {(isSanityConfigured && sanityHome?.heroOverline) || "Geelong, Victoria, Australia · Est. 1978"}
             </motion.p>
 
             {/* Separator */}
@@ -1051,8 +1110,7 @@ export default function Home() {
               transition={{ duration: 0.75, ease: EASE, delay: 1.1 }}
               className="text-white/55 text-sm sm:text-base md:text-lg font-light leading-relaxed max-w-lg mb-7 sm:mb-8"
             >
-              B2B diamond sourcing &amp; IF→FL precision conversion. Natural, lab-grown, and
-              custom — every stone GIA-certified.
+              {(isSanityConfigured && sanityHome?.heroSubtext) || "B2B diamond sourcing & IF→FL precision conversion. Natural, lab-grown, and custom — every stone GIA-certified."}
             </motion.p>
 
             {/* CTAs */}
@@ -1670,14 +1728,31 @@ export default function Home() {
                 className="w-full overflow-hidden shadow-xl relative"
                 style={{ aspectRatio: "16/9", background: "#011a36" }}
               >
-                <iframe
-                  className="w-full h-full"
-                  src="https://www.youtube.com/embed/pPMCz3DN7u4?autoplay=0&controls=1"
-                  title="Manufacturing Lab — FLX Diamonds"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
+                {sanityHome?.manufacturingVideoUrl ? (
+                  <video
+                    className="w-full h-full object-cover"
+                    src={sanityHome.manufacturingVideoUrl}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    title="Manufacturing Lab — FLX Diamonds"
+                  />
+                ) : sanityHome?.manufacturingImageUrl ? (
+                  <img
+                    src={sanityHome.manufacturingImageUrl}
+                    alt="Manufacturing Lab — FLX Diamonds"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <iframe
+                    className="w-full h-full"
+                    src="https://www.youtube.com/embed/pPMCz3DN7u4?autoplay=0&controls=1"
+                    title="Manufacturing Lab — FLX Diamonds"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                )}
               </div>
               <p className="text-[9px] uppercase tracking-[0.32em] mt-3 font-medium" style={{ color: "rgba(2,39,74,0.3)" }}>
                 Manufacturing lab · Geelong, Victoria
@@ -2141,7 +2216,7 @@ export default function Home() {
       <section className="relative overflow-hidden" style={{ height: "65vh", minHeight: "420px" }}>
         <ParallaxLayer speed={0.18} style={{ position: "absolute", inset: "-15% 0", zIndex: 0 }}>
           <img
-            src="/great-ocean-road_2.jpg"
+            src={sanityHome?.closingImageUrl || "/great-ocean-road_2.jpg"}
             alt="Twelve Apostles — Great Ocean Road, Victoria"
             className="w-full h-full object-cover object-center"
             style={{ filter: "saturate(0.85) brightness(0.55)" }}
@@ -2185,5 +2260,6 @@ export default function Home() {
       </section>
 
     </div>
+    </>
   );
 }

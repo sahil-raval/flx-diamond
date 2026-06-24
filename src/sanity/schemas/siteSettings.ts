@@ -1,4 +1,3 @@
-// studio/src/sanity/schemas/siteSettings.ts
 import { defineType, defineField } from "sanity";
 
 export default defineType({
@@ -14,7 +13,7 @@ export default defineType({
   ],
   fields: [
 
-    // ─── BRAND (all your existing fields, unchanged) ──────────────────────
+    // ─── BRAND ───────────────────────────────────────────────────────────
     defineField({
       name: "siteName",
       title: "Site Name",
@@ -37,23 +36,17 @@ export default defineType({
       description: "Used in structured data and email templates.",
       options: { hotspot: false },
       fields: [
-        defineField({
-          name: "alt",
-          title: "Alt Text",
-          type: "string",
-          initialValue: "FLX Diamonds",
-        }),
+        defineField({ name: "alt", title: "Alt Text", type: "string", initialValue: "FLX Diamonds" }),
       ],
     }),
 
-    // ─── SEO DEFAULTS ─────────────────────────────────────────────────────
+    // ─── SEO DEFAULTS ────────────────────────────────────────────────────
     defineField({
       name: "titleTemplate",
       title: "Title Template",
       type: "string",
       group: "seo",
-      description:
-        "Use {title} as a placeholder. e.g. '{title} | FLX Diamonds' — this wraps every page title.",
+      description: "Use {title} as a placeholder. e.g. '{title} | FLX Diamonds'",
       initialValue: "{title} | FLX Diamonds",
     }),
     defineField({
@@ -62,8 +55,7 @@ export default defineType({
       type: "text",
       rows: 3,
       group: "seo",
-      description:
-        "Fallback used on any page that has no meta description set. Keep under 160 characters.",
+      description: "Fallback used on any page with no meta description. Keep under 160 characters.",
       initialValue:
         "FLX Diamonds specialises in GIA-certified diamond sourcing and precision IF→FL conversion. Trade-only. Based in Geelong, Australia.",
       validation: (R) =>
@@ -74,8 +66,7 @@ export default defineType({
       title: "Default OG / Social Share Image",
       type: "image",
       group: "seo",
-      description:
-        "Fallback image when a page has no OG image set. Shown on LinkedIn, Facebook, WhatsApp previews. Recommended: 1200×630px.",
+      description: "Fallback image when a page has no OG image set. Recommended: 1200×630px.",
       options: { hotspot: true },
       fields: [
         defineField({
@@ -91,8 +82,7 @@ export default defineType({
       title: "Production Site URL",
       type: "url",
       group: "seo",
-      description:
-        "Used to build canonical URLs and the sitemap. No trailing slash. e.g. https://flxdiamond.com.au",
+      description: "No trailing slash. e.g. https://flxdiamond.com.au",
       initialValue: "https://flxdiamond.com.au",
     }),
     defineField({
@@ -103,17 +93,13 @@ export default defineType({
       description: "Without the @. Used for Twitter Card meta tags.",
     }),
 
-    // ─── LOCALBUSINESS SCHEMA ─────────────────────────────────────────────
-    // These fields power the schema.org/LocalBusiness JSON-LD injected in
-    // every page's <head>. Google uses this for the Knowledge Panel,
-    // Maps listings, and local rich results.
+    // ─── LOCALBUSINESS SCHEMA ────────────────────────────────────────────
     defineField({
       name: "businessName",
       title: "Legal / Trading Business Name",
       type: "string",
       group: "local",
-      description:
-        "Full name as registered. Used in schema.org structured data. Usually the same as Site Name.",
+      description: "Full name as registered. Used in schema.org structured data.",
       initialValue: "FLX Diamonds",
     }),
     defineField({
@@ -128,80 +114,31 @@ export default defineType({
       title: "Business Type",
       type: "string",
       group: "local",
-      description:
-        "schema.org business type. Controls how Google categorises the listing.",
+      description: "schema.org business type. Controls how Google categorises the listing.",
       options: {
         list: [
-          { title: "Jewelry Store",          value: "JewelryStore"          },
-          { title: "Local Business",          value: "LocalBusiness"         },
-          { title: "Professional Service",    value: "ProfessionalService"   },
+          { title: "Jewelry Store",        value: "JewelryStore"        },
+          { title: "Local Business",       value: "LocalBusiness"       },
+          { title: "Professional Service", value: "ProfessionalService" },
         ],
         layout: "radio",
       },
       initialValue: "JewelryStore",
     }),
-    defineField({
-      name: "foundingYear",
-      title: "Founding Year",
-      type: "number",
-      group: "local",
-      description: "Used in structured data. e.g. 1978",
-      initialValue: 1978,
-    }),
-    defineField({
-      name: "streetAddress",
-      title: "Street Address",
-      type: "string",
-      group: "local",
-    }),
-    defineField({
-      name: "suburb",
-      title: "Suburb / City",
-      type: "string",
-      group: "local",
-      initialValue: "Geelong",
-    }),
-    defineField({
-      name: "state",
-      title: "State",
-      type: "string",
-      group: "local",
-      initialValue: "Victoria",
-    }),
-    defineField({
-      name: "postcode",
-      title: "Postcode",
-      type: "string",
-      group: "local",
-    }),
-    defineField({
-      name: "country",
-      title: "Country Code",
-      type: "string",
-      group: "local",
-      description: "Two-letter ISO code. e.g. AU",
-      initialValue: "AU",
-    }),
-    defineField({
-      name: "latitude",
-      title: "Latitude",
-      type: "number",
-      group: "local",
-      description: "GPS coordinates for schema.org/GeoCoordinates. Get from Google Maps.",
-    }),
-    defineField({
-      name: "longitude",
-      title: "Longitude",
-      type: "number",
-      group: "local",
-    }),
+    defineField({ name: "foundingYear",   title: "Founding Year",    type: "number", group: "local", initialValue: 1978 }),
+    defineField({ name: "streetAddress",  title: "Street Address",   type: "string", group: "local" }),
+    defineField({ name: "suburb",         title: "Suburb / City",    type: "string", group: "local", initialValue: "Geelong"  }),
+    defineField({ name: "state",          title: "State",            type: "string", group: "local", initialValue: "Victoria" }),
+    defineField({ name: "postcode",       title: "Postcode",         type: "string", group: "local" }),
+    defineField({ name: "country",        title: "Country Code",     type: "string", group: "local", description: "Two-letter ISO code. e.g. AU", initialValue: "AU" }),
+    defineField({ name: "latitude",       title: "Latitude",         type: "number", group: "local", description: "GPS coordinates for schema.org/GeoCoordinates." }),
+    defineField({ name: "longitude",      title: "Longitude",        type: "number", group: "local" }),
     defineField({
       name: "openingHours",
       title: "Opening Hours",
       type: "array",
       group: "local",
-      description:
-        "Used in schema.org structured data. Format: 'Mo-Fr 09:00-17:00'. Add one entry per time slot.",
+      description: "Format: 'Mo-Fr 09:00-17:00'. Add one entry per time slot.",
       of: [{ type: "string" }],
       initialValue: ["Mo-Fr 09:00-17:00"],
     }),
@@ -210,16 +147,12 @@ export default defineType({
       title: "Price Range Indicator",
       type: "string",
       group: "local",
-      description:
-        "schema.org priceRange. Used in local search results.",
-      options: {
-        list: ["$", "$$", "$$$", "$$$$"],
-        layout: "radio",
-      },
+      description: "schema.org priceRange. Used in local search results.",
+      options: { list: ["$", "$$", "$$$", "$$$$"], layout: "radio" },
       initialValue: "$$$$",
     }),
 
-    // ─── CONTACT & SOCIAL (your existing fields, expanded) ────────────────
+    // ─── CONTACT & SOCIAL ────────────────────────────────────────────────
     defineField({
       name: "email",
       title: "Email Address",
@@ -243,7 +176,7 @@ export default defineType({
         },
       ],
       initialValue: [
-        { label: "Australia", value: "0474 817 548"  },
+        { label: "Australia", value: "0474 817 548"    },
         { label: "India",     value: "+91 99982 17496" },
       ],
     }),
@@ -252,22 +185,16 @@ export default defineType({
       title: "Display Address",
       type: "string",
       group: "contact",
-      description: "Shown to visitors on the Contact page. e.g. 'Geelong, VIC, Australia'",
+      description: "Shown on the Contact page. e.g. 'Geelong, VIC, Australia'",
       initialValue: "Geelong, VIC, Australia",
     }),
-    defineField({
-      name: "googleMapsUrl",
-      title: "Google Maps URL",
-      type: "url",
-      group: "contact",
-    }),
+    defineField({ name: "googleMapsUrl", title: "Google Maps URL", type: "url", group: "contact" }),
     defineField({
       name: "socialProfiles",
       title: "Social Media Profiles",
       type: "array",
       group: "contact",
-      description:
-        "Added to schema.org sameAs — helps Google link your social accounts to the business listing.",
+      description: "Added to schema.org sameAs — helps Google link your social accounts to the business listing.",
       of: [
         {
           type: "object",
@@ -276,12 +203,7 @@ export default defineType({
               name: "platform",
               type: "string",
               title: "Platform",
-              options: {
-                list: [
-                  "Instagram", "LinkedIn", "Facebook",
-                  "YouTube", "Twitter/X", "Pinterest",
-                ],
-              },
+              options: { list: ["Instagram", "LinkedIn", "Facebook", "YouTube", "Twitter/X", "Pinterest"] },
             },
             { name: "url", type: "url", title: "Profile URL" },
           ],
@@ -290,14 +212,13 @@ export default defineType({
       ],
     }),
 
-    // ─── TECHNICAL ────────────────────────────────────────────────────────
+    // ─── TECHNICAL ───────────────────────────────────────────────────────
     defineField({
       name: "googleSiteVerification",
       title: "Google Search Console Verification Code",
       type: "string",
       group: "technical",
-      description:
-        "Paste only the content value from the verification meta tag — not the full tag.",
+      description: "Paste only the content value from the verification meta tag — not the full tag.",
     }),
     defineField({
       name: "maintenanceMode",
@@ -307,7 +228,6 @@ export default defineType({
       description: "Enable to show a maintenance page to all visitors.",
       initialValue: false,
     }),
-
   ],
 
   preview: {

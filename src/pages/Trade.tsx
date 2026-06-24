@@ -224,6 +224,7 @@ interface SanityTradePage {
   };
   heroTagline?: string; heroHeading?: string; heroSubtext?: string;
   heroCta?: string; heroSecondaryCta?: string;
+  heroVideoUrl?: string; heroImageUrl?: string;
   partnerTypesTagline?: string; partnerTypesHeading?: string;
   partnerTypes?: { title: string; body: string; tags: string[] }[];
   accessTagline?: string; accessHeading?: string;
@@ -281,19 +282,45 @@ export default function Trade() {
       ══════════════════════════════════════════ */}
       <section style={{ background: "#02274A", position: "relative", overflow: "hidden" }}>
 
-        {/* Decorative teal glow */}
-        <div style={{
-          position: "absolute", top: "50%", right: "-8%",
-          width: "55vw", height: "55vw", borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(28,169,201,0.10) 0%, transparent 65%)",
-          transform: "translateY(-50%)", pointerEvents: "none",
-        }} />
-        <div style={{
-          position: "absolute", bottom: 0, left: "-5%",
-          width: "35vw", height: "35vw", borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(28,169,201,0.05) 0%, transparent 65%)",
-          pointerEvents: "none",
-        }} />
+        {/* Sanity CMS background media */}
+        {sanityTrade?.heroVideoUrl ? (
+          <>
+            <video
+              autoPlay muted loop playsInline
+              aria-hidden="true"
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
+            >
+              <source src={sanityTrade.heroVideoUrl} type="video/mp4" />
+            </video>
+            <div style={{ position: "absolute", inset: 0, background: "rgba(2,39,74,0.72)", zIndex: 1 }} />
+          </>
+        ) : sanityTrade?.heroImageUrl ? (
+          <>
+            <img
+              src={sanityTrade.heroImageUrl}
+              alt=""
+              aria-hidden="true"
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }}
+            />
+            <div style={{ position: "absolute", inset: 0, background: "rgba(2,39,74,0.72)", zIndex: 1 }} />
+          </>
+        ) : (
+          <>
+            {/* Decorative teal glow (fallback when no media) */}
+            <div style={{
+              position: "absolute", top: "50%", right: "-8%",
+              width: "55vw", height: "55vw", borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(28,169,201,0.10) 0%, transparent 65%)",
+              transform: "translateY(-50%)", pointerEvents: "none",
+            }} />
+            <div style={{
+              position: "absolute", bottom: 0, left: "-5%",
+              width: "35vw", height: "35vw", borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(28,169,201,0.05) 0%, transparent 65%)",
+              pointerEvents: "none",
+            }} />
+          </>
+        )}
 
         <div style={{
           position: "relative", zIndex: 1, maxWidth: "1200px", margin: "0 auto",

@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import emailjs from "@emailjs/browser";
-import { useShortlist } from "@/contexts/ShortlistContext";
-import { useAuth } from "@/contexts/AuthContext";
+import { useShortlist } from "@/context/ShortlistContext";
+import { useAuth } from "@/context/AuthContext";
 import type { Diamond } from "@/lib/diamond-types";
 
 const EMAILJS_SERVICE_ID  = import.meta.env.VITE_EMAILJS_SERVICE_ID  || "";

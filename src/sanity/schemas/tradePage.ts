@@ -38,6 +38,20 @@ export default defineType({
       initialValue: "Browse Inventory",
     }),
     defineField({
+      name: "heroVideo",
+      title: "Hero Background Video",
+      type: "file",
+      description: "Upload an MP4 video for the hero background. Falls back to the default navy background.",
+      options: { accept: "video/mp4,video/webm" },
+    }),
+    defineField({
+      name: "heroImage",
+      title: "Hero Background Image",
+      type: "image",
+      description: "Fallback if no video is set. Used as a full-bleed hero background.",
+      options: { hotspot: true },
+    }),
+    defineField({
       name: "partnerTypesTagline",
       title: "Partner Types Tagline",
       type: "string",

@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
-import { useShortlist } from "@/contexts/ShortlistContext";
-import { useAuth } from "@/contexts/AuthContext";
+import { useShortlist } from "@/context/ShortlistContext";
+import { useAuth } from "@/context/AuthContext";
 import type { Diamond } from "@/lib/diamond-types";
 
 function DiamondRow({ diamond, onRemove }: { diamond: Diamond; onRemove: () => void }) {
