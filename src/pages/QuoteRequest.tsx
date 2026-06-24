@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useLocation, Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import emailjs from "@emailjs/browser";
-import { useShortlist } from "@/context/ShortlistContext";
-import { useAuth } from "@/context/AuthContext";
-import type { Diamond } from "@/lib/diamond-types";
+import { useShortlist } from "@/contexts/ShortlistContext";
+import { useAuth } from "@/contexts/AuthContext";
+import type { Diamond } from "@/lib/diamond_types";
 
 const EMAILJS_SERVICE_ID  = import.meta.env.VITE_EMAILJS_SERVICE_ID  || "";
 const EMAILJS_OWNER_TMPL  = import.meta.env.VITE_EMAILJS_OWNER_TMPL  || "";

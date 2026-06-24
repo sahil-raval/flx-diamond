@@ -20,8 +20,8 @@ import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { ShortlistProvider } from "@/context/ShortlistContext";
-import { AuthProvider } from "@/context/AuthContext";
+import { ShortlistProvider } from "@/contexts/ShortlistContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import NotFound from "@/pages/not-found";
 
 const StudioPage = lazy(() => import("@/pages/Studio"));
