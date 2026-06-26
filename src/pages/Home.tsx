@@ -10,6 +10,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import DiamondTraceability from "../components/ui/diamondtraceability";
 import { DiamondCard } from "@/components/DiamondCard";
 import { Volume2, VolumeX, ArrowRight, CheckCircle2, ChevronDown, Award, Shield, Sliders, Cpu, Scale, Palette, Eye, Gem } from "lucide-react";
 
@@ -718,62 +719,58 @@ function FeaturedStoneCard({
       >
         {/* Top bar: stock ID + cert badge */}
         <div
-          className="flex items-center justify-between px-4 py-2.5 shrink-0"
+          className="flex items-center justify-between px-2.5 py-1.5 shrink-0"
           style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
         >
-          <span className="font-mono text-[9px] tracking-widest" style={{ color: "rgba(28,169,201,0.7)" }}>
+          <span className="font-mono text-[8px] tracking-widest truncate" style={{ color: "rgba(28,169,201,0.7)" }}>
             {stockId}
           </span>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1 shrink-0 ml-1">
             {certification === "GIA" && (
-              <img src="/gia-logo.png" alt="GIA" style={{ width: "14px", height: "14px", objectFit: "contain", opacity: 0.9, mixBlendMode: "screen" }} />
+              <img src="/gia-logo.png" alt="GIA" style={{ width: "11px", height: "11px", objectFit: "contain", opacity: 0.9, mixBlendMode: "screen" }} />
             )}
             <span
-              className="text-[8px] font-semibold uppercase tracking-[0.28em] px-2 py-0.5"
-              style={{ background: certBg, border: `1px solid ${certBorder}`, color: certColor, borderRadius: "4px" }}
+              className="text-[7px] font-semibold uppercase tracking-[0.2em] px-1.5 py-0.5 hidden sm:inline"
+              style={{ background: certBg, border: `1px solid ${certBorder}`, color: certColor, borderRadius: "3px" }}
             >
-              {certification} Certified
+              {certification}
             </span>
           </div>
         </div>
 
-        {/* Diamond image area */}
+        {/* Diamond image area — shorter on mobile */}
         <div
           className="relative flex items-center justify-center"
-          style={{ aspectRatio: "1", background: "radial-gradient(circle at 40% 35%, rgba(28,169,201,0.06) 0%, #011F3A 70%)", overflow: "hidden" }}
+          style={{ aspectRatio: "4/3", background: "radial-gradient(circle at 40% 35%, rgba(28,169,201,0.06) 0%, #011F3A 70%)", overflow: "hidden" }}
         >
-          {/* Sparkle corners */}
-          <div className="absolute top-3 right-3 w-0.5 h-0.5 rounded-full" style={{ background: "#1CA9C9", boxShadow: "0 0 6px #1CA9C9", opacity: 0.6 }} />
-          <div className="absolute bottom-5 left-4 w-0.5 h-0.5 rounded-full" style={{ background: "white", boxShadow: "0 0 4px white", opacity: 0.4 }} />
-          <div className="absolute top-8 left-6 w-px h-px rounded-full" style={{ background: "#1CA9C9", boxShadow: "0 0 8px #1CA9C9", opacity: 0.5 }} />
+          <div className="absolute top-2 right-2 w-0.5 h-0.5 rounded-full" style={{ background: "#1CA9C9", boxShadow: "0 0 6px #1CA9C9", opacity: 0.6 }} />
+          <div className="absolute bottom-3 left-3 w-0.5 h-0.5 rounded-full" style={{ background: "white", boxShadow: "0 0 4px white", opacity: 0.4 }} />
 
-          {/* SVG diamond graphic */}
-          <div className="w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-700" style={{ padding: "10%" }}>
+          <div className="w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-700" style={{ padding: "12%" }}>
             <FeaturedDiamondSVG shape={shape} />
           </div>
 
-          {/* FL/IF conversion badge */}
           {isFLX && (
-            <div className="absolute bottom-3 right-3 px-2 py-0.5" style={{ background: "rgba(28,169,201,0.15)", border: "1px solid rgba(28,169,201,0.35)" }}>
-              <span className="text-[7px] uppercase tracking-[0.35em] font-semibold" style={{ color: "#1CA9C9" }}>IF→FL ✦</span>
+            <div className="absolute bottom-2 right-2 px-1.5 py-0.5" style={{ background: "rgba(28,169,201,0.15)", border: "1px solid rgba(28,169,201,0.35)" }}>
+              <span className="text-[6px] uppercase tracking-[0.3em] font-semibold" style={{ color: "#1CA9C9" }}>IF→FL ✦</span>
             </div>
           )}
         </div>
 
         {/* Content */}
-        <div className="flex flex-col flex-1 px-5 pb-5 pt-4 gap-4">
+        <div className="flex flex-col flex-1 px-3 pb-3 pt-2.5 gap-2.5">
 
           {/* Shape + carat row */}
-          <div className="flex items-start justify-between">
-            <div>
-              <h3 className="font-serif text-white text-lg leading-tight">{shape}</h3>
-              <p className="text-xs font-semibold tracking-widest mt-0.5" style={{ color: "#1CA9C9" }}>
+          <div className="flex items-start justify-between gap-1">
+            <div className="min-w-0">
+              <h3 className="font-serif text-white text-sm sm:text-base leading-tight truncate">{shape}</h3>
+              <p className="text-[10px] font-semibold tracking-widest mt-0.5" style={{ color: "#1CA9C9" }}>
                 {carat.toFixed(2)} CT
               </p>
             </div>
-            <div className="flex flex-col items-end gap-1">
+            <div className="flex flex-col items-end gap-1 shrink-0">
               <div
-                className="px-2.5 py-1 text-[10px] font-bold tracking-widest"
+                className="px-1.5 py-0.5 text-[9px] font-bold tracking-widest"
                 style={{
                   background: isFLX ? "rgba(28,169,201,0.15)" : "rgba(255,255,255,0.06)",
                   border: `1px solid ${isFLX ? "rgba(28,169,201,0.5)" : "rgba(255,255,255,0.1)"}`,
@@ -783,7 +780,7 @@ function FeaturedStoneCard({
                 {clarity}
               </div>
               <div
-                className="px-2 py-0.5 text-[9px] font-semibold tracking-widest"
+                className="px-1.5 py-0.5 text-[8px] font-semibold tracking-widest"
                 style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.45)" }}
               >
                 {color}
@@ -804,12 +801,12 @@ function FeaturedStoneCard({
             ].map((c, i) => (
               <div
                 key={c.label}
-                className="flex flex-col items-center py-3"
+                className="flex flex-col items-center py-2"
                 style={{ borderRight: i < 3 ? "1px solid rgba(255,255,255,0.08)" : "none" }}
               >
-                <span className="text-[8px] uppercase tracking-[0.18em] mb-1.5" style={{ color: "rgba(255,255,255,0.3)" }}>{c.label}</span>
+                <span className="text-[7px] uppercase tracking-[0.12em] mb-1" style={{ color: "rgba(255,255,255,0.3)" }}>{c.label}</span>
                 <span
-                  className="text-[13px] font-semibold"
+                  className="text-[11px] font-semibold"
                   style={{ color: (c.label === "Clarity" && isFLX) ? "#1CA9C9" : "rgba(255,255,255,0.85)" }}
                 >
                   {c.value}
@@ -818,28 +815,28 @@ function FeaturedStoneCard({
             ))}
           </div>
 
-          {/* Details row */}
-          <div className="space-y-2" style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "12px" }}>
+          {/* Details — hidden on mobile, shown sm+ */}
+          <div className="hidden sm:block space-y-1.5" style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "8px" }}>
             <div className="flex items-center justify-between">
-              <span className="text-[9px] uppercase tracking-[0.22em]" style={{ color: "rgba(255,255,255,0.28)" }}>Measurements</span>
-              <span className="font-mono text-[10px]" style={{ color: "rgba(255,255,255,0.55)" }}>{measurements}</span>
+              <span className="text-[8px] uppercase tracking-[0.18em]" style={{ color: "rgba(255,255,255,0.28)" }}>Measurements</span>
+              <span className="font-mono text-[9px]" style={{ color: "rgba(255,255,255,0.55)" }}>{measurements}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-[9px] uppercase tracking-[0.22em]" style={{ color: "rgba(255,255,255,0.28)" }}>Polish / Sym.</span>
-              <span className="font-mono text-[10px]" style={{ color: "rgba(255,255,255,0.55)" }}>
+              <span className="text-[8px] uppercase tracking-[0.18em]" style={{ color: "rgba(255,255,255,0.28)" }}>Polish / Sym.</span>
+              <span className="font-mono text-[9px]" style={{ color: "rgba(255,255,255,0.55)" }}>
                 {polish.replace("Excellent","EX").replace("Very Good","VG")} · {symmetry.replace("Excellent","EX").replace("Very Good","VG")}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-[9px] uppercase tracking-[0.22em]" style={{ color: "rgba(255,255,255,0.28)" }}>Fluorescence</span>
-              <span className="font-mono text-[10px]" style={{ color: "rgba(255,255,255,0.55)" }}>{fluorescence}</span>
+              <span className="text-[8px] uppercase tracking-[0.18em]" style={{ color: "rgba(255,255,255,0.28)" }}>Fluorescence</span>
+              <span className="font-mono text-[9px]" style={{ color: "rgba(255,255,255,0.55)" }}>{fluorescence}</span>
             </div>
           </div>
 
           {/* CTA */}
           <div className="mt-auto">
             <div
-              className="w-full py-3.5 text-[10px] uppercase tracking-[0.4em] font-semibold text-center transition-all"
+              className="w-full py-2.5 text-[9px] uppercase tracking-[0.35em] font-semibold text-center transition-all"
               style={{ background: "rgba(28,169,201,0.08)", border: "1px solid rgba(28,169,201,0.3)", color: "#1CA9C9" }}
             >
               Request Price
@@ -1383,14 +1380,16 @@ export default function Home() {
               className="flex flex-col gap-5 sm:gap-6"
             >
               <div className="w-full overflow-hidden shadow-2xl" style={{ aspectRatio: "16/9", background: "#011a36" }}>
-                <iframe
-                  className="w-full h-full"
-                  src="https://www.youtube.com/embed/pPMCz3DN7u4?autoplay=0&controls=1"
-                  title="Diamond Crafting — FLX Diamonds"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
+                <video
+  className="w-full h-full"
+  src="4cs.mp4"
+  title="Manufacturing Lab — FLX Diamonds"
+  autoPlay
+  muted
+  loop
+  playsInline
+  controls
+/>
               </div>
               <p className="text-sm leading-relaxed font-light" style={{ color: "rgba(255,255,255,0.45)" }}>
                 FLX Diamond sources natural and lab-grown stones graded to the highest standards — 
@@ -1459,7 +1458,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-
+      <DiamondTraceability />
       {/* ══════════════════════════════════════════════════
           IF → FL EXPERTISE
       ══════════════════════════════════════════════════ */}
@@ -1576,44 +1575,6 @@ export default function Home() {
               ))}
             </div>
           </div>
-
-          {/* 50/50 profit split callout */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3, duration: 0.7 }}
-            className="mt-6 sm:mt-8 p-6 sm:p-8 flex flex-col sm:flex-row gap-5 sm:gap-10 items-start sm:items-center"
-            style={{ background: "rgba(28,169,201,0.05)", border: "1px solid rgba(28,169,201,0.2)" }}
-          >
-            <div className="flex-1">
-              <p className="font-serif text-lg sm:text-xl mb-2" style={{ color: "#02274A" }}>
-                We only earn when you earn — 50/50 profit split.
-              </p>
-              <p className="text-sm leading-relaxed" style={{ color: "rgba(2,39,74,0.5)" }}>
-                No upfront cost. No conversion fee. We calculate the IF value, the projected FL value, document it in writing, then share the profit we create together. If we can't do it, we'll tell you that before touching the stone.
-              </p>
-            </div>
-            <Link href="/investment" className="shrink-0">
-              <Button
-                className="rounded-none text-xs uppercase tracking-[0.18em] font-medium text-white hover:opacity-90 whitespace-nowrap"
-                style={{ background: "#1CA9C9", height: "46px", padding: "0 1.75rem" }}
-                data-testid="btn-iftfl-details"
-              >
-                Full Conversion Details →
-              </Button>
-            </Link>
-          </motion.div>
-
-          {/* Value teaser */}
-          <motion.p
-            initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.5, duration: 0.8 }}
-            className="text-center text-[11px] italic mt-6 sm:mt-8 font-light"
-            style={{ color: "rgba(2,39,74,0.35)" }}
-          >
-            Ask us about your stone's potential — assessment is always free.
-          </motion.p>
-
         </div>
       </section>
 
@@ -1744,14 +1705,16 @@ export default function Home() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <iframe
-                    className="w-full h-full"
-                    src="https://www.youtube.com/embed/pPMCz3DN7u4?autoplay=0&controls=1"
-                    title="Manufacturing Lab — FLX Diamonds"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
+                  <video
+  className="w-full h-full"
+  src="4cs.mp4"
+  title="Manufacturing Lab — FLX Diamonds"
+  autoPlay
+  muted
+  loop
+  playsInline
+  controls
+/>
                 )}
               </div>
               <p className="text-[9px] uppercase tracking-[0.32em] mt-3 font-medium" style={{ color: "rgba(2,39,74,0.3)" }}>
@@ -1835,7 +1798,7 @@ export default function Home() {
           </div>
 
           {/* Stone cards — 1 col mobile, 2 col tablet, 3 col desktop */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {[
               {
                 stockId: "FLX-2401-RB",  shape: "Round Brilliant", carat: 2.01, color: "D", clarity: "FL",   cut: "Excellent",
@@ -2143,6 +2106,10 @@ export default function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════════
+          FAQ
+      ══════════════════════════════════════════════════ */}
+      <FaqSection faqs={activeFaqs} />
+      {/* ══════════════════════════════════════════════════
           NO PITCH — Direct multi-CTA closing bar
       ══════════════════════════════════════════════════ */}
       <section
@@ -2205,15 +2172,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════
-          FAQ
-      ══════════════════════════════════════════════════ */}
-      <FaqSection faqs={activeFaqs} />
 
       {/* ══════════════════════════════════════════════════
           11. CLOSING — Ocean panorama + CTA
       ══════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden" style={{ height: "65vh", minHeight: "420px" }}>
+      {/* <section className="relative overflow-hidden" style={{ height: "65vh", minHeight: "420px" }}>
         <ParallaxLayer speed={0.18} style={{ position: "absolute", inset: "-15% 0", zIndex: 0 }}>
           <img
             src={sanityHome?.closingImageUrl || "/great-ocean-road_2.jpg"}
@@ -2257,7 +2220,7 @@ export default function Home() {
             </motion.div>
           </motion.div>
         </div>
-      </section>
+      </section> */}
 
     </div>
     </>
