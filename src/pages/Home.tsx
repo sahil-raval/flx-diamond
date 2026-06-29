@@ -10,7 +10,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import DiamondTraceability from "../components/ui/diamondtraceability";
+import DiamondTraceability from "../components/ui/Diamondtraceability";
 import { DiamondCard } from "@/components/DiamondCard";
 import { Volume2, VolumeX, ArrowRight, CheckCircle2, ChevronDown, Award, Shield, Sliders, Cpu, Scale, Palette, Eye, Gem } from "lucide-react";
 
